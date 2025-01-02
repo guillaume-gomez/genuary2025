@@ -22,8 +22,6 @@
     "colorthief": "^2.6.0",
     "lodash": "^4.17.21",
     "postprocessing": "^6.36.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "rooks": "^7.14.1",
     "three": "^0.171.0",
     "three-stdlib": "^2.35.2",
