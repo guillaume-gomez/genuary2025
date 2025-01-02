@@ -10,7 +10,7 @@ interface LineProps {
 function Line({position, size} : LineProps) {
     return (
         <animated.mesh position={position} scale={size}>
-            <meshStandardMaterial color={0x00FF00}  wireframe={false}/>
+            <meshStandardMaterial color={0x0000FF}  wireframe={false}/>
             <animated.boxGeometry />
         </animated.mesh>
     )
