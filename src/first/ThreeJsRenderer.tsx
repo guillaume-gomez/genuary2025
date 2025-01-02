@@ -9,8 +9,8 @@ import Line from "./Line";
 interface ThreeJsRendererProps {
 }
 
-const FROM = [3,1,0.5];
-const TO = [1,3,0.5]
+const FROM = [4,1,0.5];
+const TO = [1,4,0.5]
 
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
@@ -54,13 +54,11 @@ function ThreejsRenderer({
 
   function placeRandomly() {
     let positions = []
-    for(let x=-5; x < 5; x++) {
+    for(let x=-10; x < 10; x = x + 1.0) {
         const z = Math.random() * 10;
         const y = - Math.random() * 10;
-        console.log(y)
         positions.push([x, y,z]);
     }
-    console.log(positions)
     return positions;
   }
 
@@ -75,7 +73,7 @@ function ThreejsRenderer({
          // recenter();
         }}
       >
-        <color attach="background" args={['#06092c']} />
+        <color attach="background" args={['#1E4174']} />
         { import.meta.env.MODE === "development" ? <Stats/> : <></> }
         <Suspense fallback={<FallBackLoader/>}>
           <Stage
@@ -85,10 +83,12 @@ function ThreejsRenderer({
             environment={'studio'}
             shadows="contact"
           >
+             <group position={[0,10,0]}>
              {placeRandomly().map((position, index) =>
-                <Line key={index} position={position} size={springs.size}/>
+                <Line key={index} position={position} size={springs.size} color={"#DDA94B"} />
               )
             }
+            </group>
           </Stage>
         </Suspense>
         <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
