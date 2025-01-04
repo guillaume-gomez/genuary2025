@@ -23,8 +23,9 @@ function ThreejsRenderer({
     isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
 
+  const items = useMemo(() => placeRandomly(), []);
   const [trails, api] = useTrail(
-    20,
+    items.length,
     () => ({
         from: { size: FROM },
         to: { size: TO },
@@ -46,14 +47,16 @@ function ThreejsRenderer({
   function placeRandomly() {
     let positions = []
     for(let x=-10; x < 10; x = x + 1.0) {
-        const z = Math.random() * 10;
-        const y = - Math.random() * 10;
-        positions.push([x, y,z]);
+        for(let z=-10; z < 10; z = z + 1.0) {
+          const y = - Math.random() * 10;
+          if(Math.random() > 0.85) {
+            positions.push([x, y,z]);
+          }
+        }
     }
     return positions;
   }
 
-  const items = useMemo(() => placeRandomly(), []);
 
   return (
     <div ref={canvasContainerRef} className="w-full h-full max-h-[92%]" style={{width: '100%', height: '100vh'}} >
@@ -63,7 +66,6 @@ function ThreejsRenderer({
         shadows
         onDoubleClick={() => {
           toggleFullscreen();
-         // recenter();
         }}
       >
         { import.meta.env.MODE === "development" ? <Stats/> : <></> }
