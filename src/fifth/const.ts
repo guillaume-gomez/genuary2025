@@ -1,2 +1,2 @@
 
-export const LENGTH = 10;
+export const LENGTH = 30;
