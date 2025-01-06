@@ -1,18 +1,21 @@
 import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { BoxGeometry, MeshStandardMaterial } from "three";
+import { BoxGeometry, MeshStandardMaterial, PointLightHelper } from "three";
 import { useSpring, easings, useSpringRef, useSprings } from '@react-spring/web';
-import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Grid, Bounds, Stats, Box } from '@react-three/drei';
+import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Stats, useHelper } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
 import { animated } from '@react-spring/three';
+import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
+import Lights from "./Lights";
+import { LENGTH } from "./const";
 
 interface ThreeJsRendererProps {
 }
 
-const LENGTH = 10;
-const geometry = new BoxGeometry(0.9,0.9,1);
-const material = new MeshStandardMaterial({color: "blue"});
+
+const geometry = new RoundedBoxGeometry(0.9,0.9,1);
+const material = new MeshStandardMaterial({color: "blue", emissive: "#000000", roughness: 0.173, metalness: 0.2});
 
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
@@ -21,10 +24,9 @@ function ThreejsRenderer({
     toggleFullscreen,
     isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
-
   const positions = useMemo(() => generate(), []);
 
-  const [trails, api] = useSprings(
+  const [springs, api] = useSprings(
     positions.length,
     (index: number) => {
       const [x, y] = positions[index];
@@ -35,11 +37,11 @@ function ThreejsRenderer({
       return {
         from: { z: 0 },
         to: { z: 2 },
-        delay: distance * 1000,
+        delay: distance * 500,
         config: {
           precision: 0.0001,
-          //duration: 100, // peut etre que c'est duration qui doit changer
-          easing: easings.easeOutQuart
+          duration: 250, // peut etre que c'est duration qui doit changer
+          easing: easings.easeInSine
         },
         loop: { reverse: true }
       };
@@ -66,7 +68,7 @@ function ThreejsRenderer({
   return (
     <div ref={canvasContainerRef} className="w-full h-full max-h-[92%]" style={{width: '100%', height: '100vh'}} >
       <Canvas
-        camera={{ position: [0,0.75, 3], fov: 75, far: 50 }}
+        camera={{ position: [0,2, 3], fov: 75, far: 50 }}
         dpr={window.devicePixelRatio}
         shadows
         onDoubleClick={() => {
@@ -80,14 +82,14 @@ function ThreejsRenderer({
           depth: false
         }}*/
       >
-        { import.meta.env.MODE === "development" ? <Stats/> : <></> }
-        <color attach="background" args={["grey"]} />
-         <fog attach="fog" color="pink" near={5} far={30} />
+        <color attach="background" args={["#333333"]} />
+        <fog attach="fog" color="pink" near={0} far={20} />
         <Suspense fallback={<FallBackLoader/>}>
-            <Stage preset="upfront" preset="rembrandt" intensity={1} environment="city">
+            <Stage preset="rembrandt" intensity={0.1} environment="city">
               <group rotation={[-Math.PI/2, 0, Math.PI/4]}>
+              <Lights />
               {
-                trails.map((props, index) => {
+                springs.map((props, index) => {
                 const [x, y] = positions[index];
                 return (
                   <animated.mesh
@@ -111,12 +113,20 @@ function ThreejsRenderer({
         <OrbitControls
           makeDefault
           maxDistance={20}
-          //autoRotate={true}
-          //autoRotateSpeed={0.25}
+          autoRotate={true}
+          autoRotateSpeed={0.25}
           enableZoom={true}
           enableRotate={true}
           enablePan={false}
         />
+      { import.meta.env.MODE === "development" &&
+        <>
+        <Stats/>
+        <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
+            <GizmoViewport labelColor="white" axisHeadScale={1} />
+        </GizmoHelper>
+        </>
+      }
       </Canvas>
     </div>
   );
