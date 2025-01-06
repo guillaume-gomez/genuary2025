@@ -68,7 +68,6 @@ function ThreejsRenderer({
           toggleFullscreen();
         }}
       >
-        { import.meta.env.MODE === "development" ? <Stats/> : <></> }
         <Suspense fallback={<FallBackLoader/>}>
           <Stage
             preset="upfront"
@@ -83,12 +82,18 @@ function ThreejsRenderer({
               )
             }
             </group>
+            <Box  args={[1, 1, 1]}  color-material="white">
           </Stage>
           <SkyBox  size={25}/>
         </Suspense>
-        <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
-          <GizmoViewport labelColor="white" axisHeadScale={1} />
-        </GizmoHelper>
+         { import.meta.env.MODE === "development" &&
+          <>
+          <Stats/>
+          <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
+            <GizmoViewport labelColor="white" axisHeadScale={1} />
+          </GizmoHelper>
+          </>
+        }
         <OrbitControls makeDefault maxDistance={20} autoRotate={true} autoRotateSpeed={0.25} enableZoom={true} enableRotate={true} enablePan={false} />
       </Canvas>
     </div>
