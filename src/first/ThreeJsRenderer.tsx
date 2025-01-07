@@ -2,7 +2,7 @@ import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
 import { useSpring, easings, useSpringRef, useTrail } from '@react-spring/web';
-import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Grid, Bounds, Stats, Box } from '@react-three/drei';
+import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Grid, Bounds, Stats } from '@react-three/drei';
 import FallBackLoader from "./FallBackLoader";
 import Line from "./Line";
 import { GradientTexture } from '@react-three/drei';
@@ -72,7 +72,7 @@ function ThreejsRenderer({
           <Stage
             preset="upfront"
             adjustCamera={false}
-            intensity={0.50}
+            intensity={0.2}
             environment={'studio'}
             shadows="contact"
           >
@@ -82,17 +82,17 @@ function ThreejsRenderer({
               )
             }
             </group>
-            <Box  args={[1, 1, 1]}  color-material="white">
           </Stage>
           <SkyBox  size={25}/>
+
         </Suspense>
-         { import.meta.env.MODE === "development" &&
-          <>
+         { import.meta.env.MODE === "development" && (<>
           <Stats/>
           <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
             <GizmoViewport labelColor="white" axisHeadScale={1} />
           </GizmoHelper>
-          </>
+          </>)
+
         }
         <OrbitControls makeDefault maxDistance={20} autoRotate={true} autoRotateSpeed={0.25} enableZoom={true} enableRotate={true} enablePan={false} />
       </Canvas>
