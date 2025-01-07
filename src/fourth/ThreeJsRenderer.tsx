@@ -1,7 +1,8 @@
 import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { easings, useTrail } from '@react-spring/web';
+import { easings, useTrail, useSprings } from '@react-spring/web';
+import { animated } from '@react-spring/three';
 import { CameraControls, GizmoHelper, GizmoViewport, Stage, Stats } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
 import { Bloom, EffectComposer, Noise, Vignette, Pixelation,BrightnessContrast  } from '@react-three/postprocessing'
@@ -10,10 +11,19 @@ import { useControls } from 'leva';
 import Leather from "./Leather";
 import Blanket from "./Blanket";
 import Metal from "./Metal";
+import { BoxGeometry } from "three";
+import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import { useLoader } from '@react-three/fiber';
 
 
 interface ThreeJsRendererProps {
 }
+
+function getRandomNumber(min: number, max: number) : number  {
+  return Math.random() * (max - min) + min
+}
+
+const geometry = new BoxGeometry(1,1,1);
 
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
@@ -29,20 +39,22 @@ function ThreejsRenderer({
 
   const framePosition = -20;
   const items = useMemo(() => generate(), []);
-  const [trails, api] = useTrail(
+  const [trails, api] = useSprings(
     items.length,
-    (index: number) => ({
-        from: { position:[0,0,-50], scale: [0,0,0], type: items[index].type },
-        to: {...items[index]},
-        delay: 500,
-        config: {
-          precision: 0.0001,
-          duration: 500,
-          easing: easings.easeOutQuart
-        },
-      }),
+    (index: number) => {
+      return {
+          from: { x: 0, y: 0, z: 20, scaleX: 0, scaleY: 0, scaleZ: 0, type: items[index].type },
+          to:  items[index],
+          delay: 0,//index * 500,
+          config: {
+            precision: 0.0001,
+            duration: 500,
+            easing: easings.easeOutQuart
+          },
+        }
+      },
     []
-  )
+  );
 
   useEffect(() => {
     api.start();
@@ -61,18 +73,20 @@ function ThreejsRenderer({
     const types = ['leather', 'metal', 'blanket', 'other'];
     let attributes = []
 
-    for(let index = 0; index < 20; index++) {
+    for(let index = 0; index < 50; index++) {
       attributes.push({
-        position: [Math.random() * 5, Math.random() * 2, framePosition],
-        scale: [1, 1.5, 0.2],
+        x: getRandomNumber(0,20),
+        y: getRandomNumber(0,20),
+        z: framePosition +1 ,
+        scaleX: getRandomNumber(1, 5),
+        scaleY: getRandomNumber(1, 5),
+        scaleZ: Math.random(),
         type: types[Math.floor(types.length * Math.random())]
       })
     }
-
-    console.log(attributes)
-
     return attributes;
   }
+
 
   return (
     <div ref={canvasContainerRef} className="w-full h-screen">
@@ -108,8 +122,8 @@ function ThreejsRenderer({
                 <meshToonMaterial color={"red"} />
               </mesh>
 
-              <group position={[0,0,0]}>
-                 {trails.map((props, index) => {
+              <group position={[-10, -10, 0]}>
+                 {/*{trails.map((props, index) => {
                     switch(props.type) {
                       case "leather": return <Leather position={props.position} scale={props.scale}/>;
                       case "metal": return <Metal position={props.position} scale={props.scale}/>;
@@ -124,17 +138,36 @@ function ThreejsRenderer({
                                                 <meshStandardMaterial color={"blue"}/>
                                             </mesh>
                  })
-                }
+                }*/}
+
+                {trails.map((props, index) => {
+                  return (
+                    <animated.mesh
+                      castShadow
+                      receiveShadow
+                      key={index}
+                      position-x={props.x}
+                      position-y={props.y}
+                      position-z={props.z}
+                      scale-x={props.scaleX}
+                      scale-y={props.scaleY}
+                      scale-z={props.scaleZ}
+                      geometry={geometry}
+                    >
+                                                <meshStandardMaterial color={"black"}/>
+                                            </animated.mesh>)
+                })
+              }
               </group>
 
-             {/*<Leather position={[-2,-1,0]} scale={[2,1,0.5]}/>
+             <Leather position={[-2,-1,0]} scale={[2,1,0.5]}/>
              <Metal position={[0,0,0]} scale={[1,1,0.2]} />
              <Blanket position={[0,2,0]} scale={[1,1,0.2]} />
-*/}
+
             {/*</Stage>*/}
 
            <EffectComposer multisampling={ 0 }>
-               <Pixelation granularity={2} />
+               <Pixelation granularity={4} />
                <Noise premultiply={true} />
                <Vignette />
             </EffectComposer>
