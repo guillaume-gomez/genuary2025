@@ -1,10 +1,16 @@
 import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { useSpring, easings, useSpringRef, useTrail } from '@react-spring/web';
-import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Grid, Bounds, Stats, Box } from '@react-three/drei';
+import { easings, useTrail } from '@react-spring/web';
+import { CameraControls, GizmoHelper, GizmoViewport, Stage, Stats } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
-import { Bloom, EffectComposer, Noise, Vignette, Pixelation, ToneMapping, Glitch } from '@react-three/postprocessing'
+import { Bloom, EffectComposer, Noise, Vignette, Pixelation,BrightnessContrast  } from '@react-three/postprocessing'
+import { ToneMappingMode, BlendFunction } from 'postprocessing'
+import { useControls } from 'leva';
+import Leather from "./Leather";
+import Blanket from "./Blanket";
+import Metal from "./Metal";
+
 
 interface ThreeJsRendererProps {
 }
@@ -16,19 +22,24 @@ function ThreejsRenderer({
     toggleFullscreen,
     isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
+  const { y } = useControls("Light", {y: {value: 5, step: 0.2, min: -10, max: 10}})
 
+  const frameRef = useRef();
+  const cameraControllerRef = useRef<CameraControls|null>(null);
+
+  const framePosition = -20;
+  const items = useMemo(() => generate(), []);
   const [trails, api] = useTrail(
-    5,
-    () => ({
-        from: { size: [0,0,0] },
-        to: { size: [1,1,1] },
+    items.length,
+    (index: number) => ({
+        from: { position:[0,0,-50], scale: [0,0,0], type: items[index].type },
+        to: {...items[index]},
         delay: 500,
         config: {
           precision: 0.0001,
-          duration: 2000,
+          duration: 500,
           easing: easings.easeOutQuart
         },
-        loop: { reverse: true }
       }),
     []
   )
@@ -37,48 +48,112 @@ function ThreejsRenderer({
     api.start();
   },[api]);
 
+  function recenter() {
+     if(!frameRef.current || !cameraControllerRef.current) {
+      return;
+    }
+    cameraControllerRef.current.fitToBox(frameRef.current, true,
+      { paddingLeft: .1, paddingRight: .1, paddingBottom: .1, paddingTop: .1 }
+    );
+  }
 
+  function generate() {
+    const types = ['leather', 'metal', 'blanket', 'other'];
+    let attributes = []
+
+    for(let index = 0; index < 20; index++) {
+      attributes.push({
+        position: [Math.random() * 5, Math.random() * 2, framePosition],
+        scale: [1, 1.5, 0.2],
+        type: types[Math.floor(types.length * Math.random())]
+      })
+    }
+
+    console.log(attributes)
+
+    return attributes;
+  }
 
   return (
     <div ref={canvasContainerRef} className="w-full h-screen">
       <Canvas
-        camera={{ position: [0,0.75, 3], fov: 75, far: 50 }}
+        camera={{ position: [0,2, 15], fov: 75, far: 50 }}
         dpr={window.devicePixelRatio}
         shadows
         onDoubleClick={() => {
           toggleFullscreen();
         }}
-        /*gl={{
+        gl={{
           powerPreference: "high-performance",
           alpha: false,
-          antialias: false,
+          antialias: true,
           stencil: false,
           depth: false
-        }}*/
+        }}
       >
-        { import.meta.env.MODE === "development" ? <Stats/> : <></> }
-        <color attach="background" args={["grey"]} />
-        <fog attach="fog" color="black" near={0} far={2} />
+        <color attach="background" args={["#999"]} />
+       {/* <fog attach="fog" color="black" near={0} far={10} />*/}
+        <pointLight position={[5,y,5]} intensity={200} />
+        <pointLight position={[-3,-3,2]} intensity={1} />
+        <ambientLight />
         <Suspense fallback={<FallBackLoader/>}>
-            <Stage preset="upfront" preset="rembrandt" intensity={1} environment="city">
-              <mesh castShadow receiveShadow position={[0,2,0]}>
-                <boxGeometry args={[1,2,1]} />
-                <meshStandardMaterial color="blue"/>
+           {/*<Stage adjustCamera={false} preset="soft" intensity={0.1} environment="warehouse" shadows="accumulative">*/}
+              {/*<mesh castShadow receiveShadow position={[0,3,0]}>
+                <torusKnotGeometry args={[1, 0.4, 64, 16]} />
+                <meshToonMaterial color={"red"} />
+              </mesh>*/}
 
+              <mesh ref={frameRef} castShadow receiveShadow position={[0,0,framePosition]}>
+                <boxGeometry args={[20, 20, 0.5]} />
+                <meshToonMaterial color={"red"} />
               </mesh>
 
-              <mesh castShadow receiveShadow position={[-2,2,0]}>
-                <boxGeometry args={[1,1,1]} />
-                <meshStandardMaterial color="red"/>
+              <group position={[0,0,0]}>
+                 {trails.map((props, index) => {
+                    switch(props.type) {
+                      case "leather": return <Leather position={props.position} scale={props.scale}/>;
+                      case "metal": return <Metal position={props.position} scale={props.scale}/>;
+                      case "blanket": return <Blanket position={props.position} scale={props.scale}/>;
+                      case "other": return (<mesh position={props.position} scale={props.scale}>
+                                                <boxGeometry args={[1,1,1]} />
+                                                <meshStandardMaterial color={"blue"}/>
+                                            </mesh>);
+                    }
+                    return <mesh position={props.position} scale={props.scale}>
+                                                <boxGeometry args={[1,1,1]} />
+                                                <meshStandardMaterial color={"blue"}/>
+                                            </mesh>
+                 })
+                }
+              </group>
 
-              </mesh>
-            </Stage>
+             {/*<Leather position={[-2,-1,0]} scale={[2,1,0.5]}/>
+             <Metal position={[0,0,0]} scale={[1,1,0.2]} />
+             <Blanket position={[0,2,0]} scale={[1,1,0.2]} />
+*/}
+            {/*</Stage>*/}
+
+           <EffectComposer multisampling={ 0 }>
+               <Pixelation granularity={2} />
+               <Noise premultiply={true} />
+               <Vignette />
+            </EffectComposer>
+
         </Suspense>
+        { import.meta.env.MODE === "development"  && <>
+          <Stats/>
+          <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
+            <GizmoViewport labelColor="white" axisHeadScale={1} />
+          </GizmoHelper>
+          </>
+        }
 
-        <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
-          <GizmoViewport labelColor="white" axisHeadScale={1} />
-        </GizmoHelper>
-        <OrbitControls makeDefault maxDistance={20} autoRotate={true} autoRotateSpeed={0.25} enableZoom={true} enableRotate={true} enablePan={false} />
+        <CameraControls
+          makeDefault
+          smoothTime={0.25}
+          restThreshold={0.1}
+          ref={cameraControllerRef}
+        />
       </Canvas>
     </div>
   );

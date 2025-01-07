@@ -5,7 +5,7 @@ import FifthProject from "./fifth/App";
 
 function App() {
   return (
-    <div className="flex flex-col gap-2 bg-slate-900">
+    <div className="flex flex-col gap-2 bg-neutral-900">
       {/*<FirstProject />
       <ThirdProject />*/}
       <FourthProject />
