@@ -20,9 +20,9 @@ function ThreejsRenderer({
   } = useFullscreen({ target: canvasContainerRef });
 
   return (
-    <div ref={canvasContainerRef} className="w-full h-full max-h-[92%]" style={{width: '100%', height: '100vh'}} >
+    <div ref={canvasContainerRef} className="w-full h-screen">
       <Canvas
-        camera={{ position: [0,2, 3], fov: 75, far: 50 }}
+        camera={{ position: [0,1.5, 3.5], fov: 75, far: 50 }}
         dpr={window.devicePixelRatio}
         shadows
         onDoubleClick={() => {

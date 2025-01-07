@@ -40,7 +40,7 @@ function ThreejsRenderer({
 
 
   return (
-    <div ref={canvasContainerRef} className="w-full h-full max-h-[92%]" style={{width: '100%', height: '100vh'}} >
+    <div ref={canvasContainerRef} className="w-full h-screen">
       <Canvas
         camera={{ position: [0,0.75, 3], fov: 75, far: 50 }}
         dpr={window.devicePixelRatio}

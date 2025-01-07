@@ -5,13 +5,12 @@ import FifthProject from "./fifth/App";
 
 function App() {
   return (
-    <>
-      <FirstProject />
-      {/*<ThirdProject />
+    <div className="flex flex-col gap-2 bg-slate-900">
+      {/*<FirstProject />
+      <ThirdProject />*/}
       <FourthProject />
-      */}
       {/*<FifthProject />*/}
-    </>
+    </div>
   )
 }
 
