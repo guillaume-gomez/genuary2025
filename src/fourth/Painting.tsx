@@ -11,7 +11,11 @@ function getRandomNumber(min: number, max: number) : number  {
 
 const geometry = new BoxGeometry(1,1,1);
 
-function Painting () {
+interface PaintingProps {
+    onAnimationFinish: () => void;
+}
+
+function Painting ({onAnimationFinish} : PaintingProps) {
     const materials = useBlackMaterials();
 
     const framePosition = -20;
@@ -23,7 +27,7 @@ function Painting () {
       return {
           from: { x: 0, y: 0, z: 20, scaleX: 0, scaleY: 0, scaleZ: 0, done: 0 },
           to:  items[index],
-          delay: index * 250,
+          delay: index * 100,
           config: {
             precision: 0.0001,
             duration: 500,
@@ -31,9 +35,8 @@ function Painting () {
           },
           onRest:(result, spring) => {
             const numberOfAnimationFinished = springs.filter(({done}) => done.get() === 1).length;
-              console.log(numberOfAnimationFinished)
             if(numberOfAnimationFinished === items.length) {
-                //callback to said animation finished
+                onAnimationFinish();
 
             }
           }
@@ -54,7 +57,7 @@ function Painting () {
         const types = ['leather', 'blanket', 'metal', 'other'];
         let attributes = []
 
-        for(let index = 0; index < 70; index++) {
+        for(let index = 0; index < 50; index++) {
           const scaleZ = Math.random() * 2;
           attributes.push({
             x: getRandomNumber(0,20),

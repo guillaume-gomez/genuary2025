@@ -48,7 +48,9 @@ function useBlackMaterials() {
       });
 
       const other = new MeshStandardMaterial({
-        color: "#111"
+        color: "#111",
+        roughness: Math.random(),
+        metalness: Math.random()
       });
 
       setMaterials([leather, blanket, metal, other]);
