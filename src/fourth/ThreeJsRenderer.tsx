@@ -54,7 +54,7 @@ function ThreejsRenderer({
           to:  { leftX: 5, leftY: -5, rightX: -5, rightY: 5, visible: true },
           loop: { reverse: true },
           config: {
-            duration: 2000,
+            duration: 5000,
             precision: 0.0001,
             easing: easings.easeInQuad
           },
