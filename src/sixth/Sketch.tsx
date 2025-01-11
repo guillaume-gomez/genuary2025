@@ -3,6 +3,7 @@ import p5 from "p5";
 
 let x = -100;
 let speed = 2.5;
+let sunSpeed = 0;
 
 export default function P5Sketch() {
     const renderRef = useRef();
@@ -14,10 +15,13 @@ export default function P5Sketch() {
         }
 
         function renderSun(p: any) {
+            sunSpeed += 0.05;
+            const x = p.map(Math.sin(sunSpeed), -1, 1, 0, 1000);
+            const y = p.map(Math.cos(sunSpeed), -1, 1, 35, 500);
             p.stroke(255, 204, 0);
             p.fill(255,255,12);
             p.strokeWeight(4);
-            p.circle(50, 50, 75);
+            p.circle(x, y, 75);
         }
 
         function renderMontain(
@@ -65,7 +69,7 @@ export default function P5Sketch() {
                         speed = -speed;
                     }
                 } else {
-                    if (x - 300 > 0) {
+                    if (x > -300) {
                         x += speed;
                     } else {
                         speed = -speed;
@@ -121,11 +125,3 @@ export default function P5Sketch() {
         <div ref={renderRef}></div>
     )
 }
-
-/*
-#05204D   5,32,77 -> lac (bleu foncé)
-#004290   0, 66,144 -> bleu plus clair
-#6458AE   100, 88, 174 -> violet
-#DD98D1   221, 152, 209-> rose
-#EAB0A2  234, 11, 162 -> rose petant
-*/
