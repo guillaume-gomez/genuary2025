@@ -2,14 +2,18 @@ import FirstProject from "./first/App";
 import ThirdProject from "./third/App";
 import FourthProject from "./fourth/App";
 import FifthProject from "./fifth/App";
+import SixthProject from "./sixth/App";
+import NinthProject from "./ninth/App";
 
 function App() {
   return (
     <div className="flex flex-col gap-2 bg-neutral-900">
-      {/*<FirstProject />
-      <ThirdProject />*/}
+{/*      <FirstProject />
+      <ThirdProject />
       <FourthProject />
-      {/*<FifthProject />*/}
+      <FifthProject />
+      <SixthProject />*/}
+      <NinthProject />
     </div>
   )
 }
