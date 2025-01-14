@@ -4,6 +4,7 @@ import FourthProject from "./fourth/App";
 import FifthProject from "./fifth/App";
 import SixthProject from "./sixth/App";
 import NinthProject from "./ninth/App";
+import ThirteenthProject from "./thirteenth/App";
 
 function App() {
   return (
@@ -13,7 +14,9 @@ function App() {
       <FourthProject />
       <FifthProject />
       <SixthProject />*/}
-      <NinthProject />
+{/*      <NinthProject />*/}
+    <ThirteenthProject />
+
     </div>
   )
 }
