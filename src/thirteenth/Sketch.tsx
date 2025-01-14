@@ -73,6 +73,7 @@ export default function P5Sketch() {
                     } else {
                         triangles[index].segment = segment;
                     }
+                    p.translate(10,10);
                     p.rotate(rotationAngle);
                     renderTriangle(p,p.width/2,p.height/2, Math.max(0, segment), color);
                 }

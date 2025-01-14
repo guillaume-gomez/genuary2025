@@ -1,47 +1,54 @@
 import React, { useEffect, useRef } from 'react';
 import p5 from "p5";
 
-let x = -100;
-let speed = 2.5;
-let sunSpeed = 0;
-
 const paletteSky = [
-    ['#311f62', 0.3],
-    ['#5a336e',0.35],
-    ['#8d5273', 0.40],
-    ['#c3727c', 0.45],
-
-    ['#e8817f', 0.50],
-
-    ['#c3727c', 0.60],
-    ['#8d5273', 0.65],
-    ['#5a336e',0.70],
-    ['#311f62', 1.0],
+    ['#2c4e55', 0.0],
+    ['#2c4e55', 0.3],
+    ['#ffcb73', 0.40],
+    ['#ffffe9', 0.45],
+    ['#ffcb73',0.55],
+    ['#2c4e55', 0.80],
+    ['#2c4e55', 0.85],
 ];
 
+const paletteMountainBack = [
+    ['#355565', 0.0],
+    ['#355565', 0.3],
+    ['#ffb866', 0.40],
+  //  ['#b2b28b', 0.45],
+    ['#ffb866',0.55],
+    ['#355565', 0.80],
+    ['#355565', 0.85],
+]
+
 const paletteLake = [
-    ['#0B3D91', 0.3],
-    ['#1E5B9A',0.35],
-    ['#A4C8E1', 0.40],
-
-    ['#D0E7F4', 0.60],
-
-    ['#A4C8E1', 0.65],
-    ['#1E5B9A',0.70],
-    ['#0B3D91', 1.0],
-
+    ['#011322', 0.0],
+    ['#011322', 0.3],
+    ['#256685', 0.40],
+  //  ['#b2b28b', 0.45],
+    ['#6497b1',0.55],
+    ['#011322', 0.80],
+    ['#011322', 0.85],
 ];
 
 const paletteMountain = [
-    ['#5e7d61', 0.3],
-    ['#6f9973',0.35],
-    ['#86aa89', 0.40],
+    ['#0b0e36', 0.0],
+    ['#0b0e36', 0.3],
+    ['#e77038', 0.40],
+    //['#ffc8af', 0.45],
+    ['#e77038',0.55],
+    ['#0b0e36', 0.80],
+    ['#0b0e36', 0.85],
+];
 
-    ['#92c496', 0.60],
-
-    ['#86aa89', 0.65],
-    ['#6f9973',0.70],
-    ['#5e7d61', 1.0],
+const paletteMountainLight = [
+    ['#101551', 0.0],
+    ['#101551', 0.3],
+    ['#ff7c3e', 0.40],
+    //['#ffc8af', 0.45],
+    ['#ff7c3e',0.55],
+    ['#101551', 0.80],
+    ['#101551', 0.85],
 ];
 
 const lengthAnimation = 12000;
@@ -54,6 +61,10 @@ export default function P5Sketch() {
         if(rendered.current) {
             return;
         }
+
+        let x = -100;
+        let speed = 3;
+        let sunSpeed = 0;
 
         //==> 0.05 ~ 12 SECONDS
         function renderSun(p: any) {
@@ -70,12 +81,11 @@ export default function P5Sketch() {
             p: any,
             position: [number, number],
             size:[number, number],
-            color: [number, number, number]
+            color
         ) {
             const [x, y] = position;
             const [width, height] = size;
-            const [r,g,b] =  color;
-            p.fill(r, g, b);
+            p.fill(color);
             p.noStroke();
             p.triangle(x, y, x+width/2, height, x + width, y);
         }
@@ -105,7 +115,7 @@ export default function P5Sketch() {
 
                 if (speed > 0) {
                     // If the ball has reached the end of the container or not
-                    if (x + 300 < p.width) {
+                    if (x < p.width + 80) {
                         x += speed
                     } else {
                         speed = -speed;
@@ -124,23 +134,26 @@ export default function P5Sketch() {
                 renderSun(p);
 
                 // back layer of mountains
-                renderMontain(p, [-100, 500], [600,100], [255,200,200]);
-                renderMontain(p, [-200, 500], [600,150], [255,200,200]);
-                renderMontain(p, [-300, 500], [600,150], [255,200,200]);
+                const colorBackMountain = p.paletteLerp(paletteMountainBack, time);
+                renderMontain(p, [-100, 500], [600,100], colorBackMountain);
+                renderMontain(p, [-200, 500], [600,150], colorBackMountain);
+                renderMontain(p, [-300, 500], [600,150], colorBackMountain);
 
-                renderMontain(p, [485, 500], [600,100], [255,200,200]); // green
-                renderMontain(p, [385, 500], [600,120], [255,200,200]);
-                renderMontain(p, [285, 500], [600,110], [255,200,200]);
+                renderMontain(p, [485, 500], [600,100], colorBackMountain);
+                renderMontain(p, [385, 500], [600,120], colorBackMountain);
+                renderMontain(p, [285, 500], [600,110], colorBackMountain);
 
-                renderMontain(p, [100, 500], [600,100], [255,200,200]);
-                renderMontain(p, [0, 500], [600,150], [255,200,200]);
+                renderMontain(p, [100, 500], [600,100], colorBackMountain);
+                renderMontain(p, [0, 500], [600,150], colorBackMountain);
 
                 // front layers of moutains
-                renderMontain(p, [420, 500], [500,195], [111,153,115]); // orange
-                renderMontain(p, [125, 500], [600,175], [100, 100, 100]); // purple
-                renderMontain(p, [-50, 500], [500,200], [94,125,97]); // red
-                renderMontain(p, [-600, 500], [800,175], [200, 200, 200]); // black
-                renderMontain(p, [650, 500], [400,175], [240, 240, 200]); // green
+                const colorMountain = p.paletteLerp(paletteMountain, time);
+                const colorMountainLight = p.paletteLerp(paletteMountainLight, time);
+                renderMontain(p, [420, 500], [500,195], colorMountainLight);
+                renderMontain(p, [125, 500], [600,175], colorMountain); // purple
+                renderMontain(p, [-50, 500], [500,200], colorMountainLight); // red
+                renderMontain(p, [-600, 500], [800,175], colorMountain); // black
+                renderMontain(p, [650, 500], [400,175], colorMountain); // green
 
 
                 p.fill(p.brightness(p.paletteLerp(paletteLake, time), 50));
@@ -152,15 +165,6 @@ export default function P5Sketch() {
 
                 p.fill(255,255,255);
                 renderBoat(p,[x,550]);
-
-                // helpers for the composition of the image
-                /*p.fill(255,0,0);
-                p.noStroke();
-                p.rect(0, 100, 800, 4);
-                p.rect(0, 175, 800, 4);
-                p.rect(0, 410, 800, 4);*/
-
-
             }
         })
     }, []);
