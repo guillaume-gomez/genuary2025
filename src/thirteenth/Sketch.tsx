@@ -55,7 +55,9 @@ export default function P5Sketch() {
             console.log(triangles)
 
             p.setup = () => {
-                p.createCanvas(800, 800).parent(renderRef.current);
+                const width = document.body.offsetWidth - 15;
+                const height = document.body.offsetHeight - 15;
+                p.createCanvas(width, height).parent(renderRef.current);
             }
 
             p.draw = () => {
