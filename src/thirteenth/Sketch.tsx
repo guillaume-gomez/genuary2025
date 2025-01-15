@@ -65,7 +65,6 @@ export default function P5Sketch() {
                 p.angleMode(p.DEGREES);
 
                 p.background(255,255,255);
-                // If we're travelling towards the right or left
                 for(let index = 0; index < triangles.length; index++) {
                     let { segment, color } = triangles[index];
                     segment = segment + (100*p.deltaTime)/100;

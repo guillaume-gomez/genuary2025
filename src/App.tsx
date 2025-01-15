@@ -6,6 +6,7 @@ import SixthProject from "./sixth/App";
 import NinthProject from "./ninth/App";
 import TenthProject from "./tenth/App";
 import ThirteenthProject from "./thirteenth/App";
+import FourteenthProject from "./fourtheenth/App";
 
 function App() {
   return (
@@ -16,8 +17,9 @@ function App() {
       <FifthProject />
       <SixthProject />
       <NinthProject />
-      <ThirteenthProject /> */}
       <TenthProject />
+      <ThirteenthProject />*/}
+      <FourteenthProject />
 
     </div>
   )
