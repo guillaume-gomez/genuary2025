@@ -19,7 +19,7 @@ function App() {
       <NinthProject />
       <TenthProject />
       <ThirteenthProject />*/}
-      <FourteenthProject />
+     <FourteenthProject />
 
     </div>
   )
