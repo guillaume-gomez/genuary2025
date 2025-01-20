@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import p5 from "p5";
 
+//https://www.mathkang.org/cite/expo20001.html
 
 export default function P5Sketch() {
     const renderRef = useRef();
@@ -10,40 +11,79 @@ export default function P5Sketch() {
         if(rendered.current) {
             return;
         }
-
-        let x = 0;
-        let y = 0;
-
         new p5(p => {
             // flag to avoid to many instances of p5
             rendered.current = true;
+            const colors = [
+                "#f4a0b6",
+                "#c60b27",
+                "#0baee8",
+                "#04aa34",
+                "#ebcf06",
+                "#f0a500",
+                "#e23721",
+                "#0069b3"
+            ];
+            let shapes = [];
+            
+            function renderShape(xCenter: number, yCenter: number, color: number, piMoving: number, rotate: number) {
+                const perimeterCircle = 350;
+                const diameterCircle = perimeterCircle/p.PI;
+                const diameterLine = perimeterCircle/piMoving;
+                const radius = diameterLine / 2;
+
+                p.push();
+
+                p.fill(color);       
+                p.translate(xCenter,yCenter);
+                p.rotate(rotate);
+                p.strokeWeight(4);
+                p.circle(0,0, diameterCircle);
+                p.strokeWeight(6);
+                p.line(-radius, 0, radius, 0);
+
+                p.pop();
+            }
         
             p.setup = () => {
               // const width = document.body.offsetWidth - 15;
               // const height = document.body.offsetHeight - 15;
-              p.createCanvas(1000, 800).parent(renderRef.current);
-              //p.rectMode(p.CENTER);   
-              p.background(30, 30, 30);
+              p.createCanvas(1000, 1000).parent(renderRef.current);
+              const index = Math.floor(Math.random() * colors.length);
+              p.fill(colors[index]);
+              // remove the color selected for the shapes
+              let colorsShape = colors.slice();
+              colorsShape.splice(index,1)
+
+              const iteration = 8;
+              const widthIteration = p.width/iteration;
+              const heightIteration = p.height/iteration;
+              for(let x=0; x < iteration; x++) {
+                const color = colorsShape[ Math.floor(Math.random() * colorsShape.length) ];
+                for(let y=0; y < iteration; y++) {
+                    shapes.push({
+                        x: (x * widthIteration) + widthIteration/2 ,
+                        y: (y * heightIteration) + heightIteration/2,
+                        color,
+                        angle: Math.random() * Math.PI/1.2
+                    });
+                }
+              }
+
+              p.background(30);
             }
 
             p.draw = () => {
                 p.frameRate(30);
+
                 let s = p.millis() / 1000;
                 let duration = s * 2.0;
-//              
-                const r = p.random(0, 255);
-                const g = p.random(0, 255);
-                const b = p.random(0, 255);
-                const x2 = p.random(0, p.width);
-                const y2 = p.random(0, p.height);
-                p.strokeWeight(5);
-                p.stroke(r, g, b);
-                
-                p.line(x, y, x2, y2);
-                //p.rect(x, y, 10, 10);
-                //p.noLoop();
-                x = x2;
-                y = y2;
+                const piMoving = p.map(p.sin(s), -1, 1, p.PI, 4); 
+                const rotate = s * p.PI/12;
+
+                shapes.forEach(({x, y, color, angle}) => {
+                    renderShape(x, y, color, piMoving, angle * p.sin(2*piMoving) );
+                });
             }
         })
     }, []);

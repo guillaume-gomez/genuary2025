@@ -2,11 +2,30 @@ import React, { useEffect, useRef } from 'react';
 import p5 from "p5";
 
 import { cubeRing, hexToPixel } from "./Hexagon";
+import { createHueShiftPalette } from "../fifteenth/colors-generation.ts";
 
 
 export default function P5Sketch() {
     const renderRef = useRef();
     const rendered = useRef(false);
+
+    function randomColor(baseColor: [number, number, number], numberOfColor: number = 10) {
+    const [l, c, h] = baseColor;
+    const hslColors = createHueShiftPalette(
+      {
+        base: {
+          l,
+          c,
+          h,
+        },
+        minLightness: 10,
+        maxLightness: 90,
+        hueStep: 12,
+        numberOfColor,
+      }
+    );
+    return hslColors;
+  }
 
     useEffect(() => {
         if(rendered.current) {
@@ -31,7 +50,8 @@ export default function P5Sketch() {
             // flag to avoid to many instances of p5
             rendered.current = true;
             let hexagonsByDepth = [];
-            const size = 20;
+            const size = 10;
+
 
             function drawExtremum(y: number, height: number) {
               const offset = 5;
@@ -66,14 +86,21 @@ export default function P5Sketch() {
               // const width = document.body.offsetWidth - 15;
               // const height = document.body.offsetHeight - 15;
               p.createCanvas(500, 800).parent(renderRef.current);
+              const depth = 28;
+              const colors = randomColor([
+                p.random(0, 100),
+                p.random(0, 100),
+                p.random(0, 100)
+              ],
+              depth)
 
-              for(let depth=1; depth <= 14; depth++) {
-                const hexagons = cubeRing({x: 0, y: 0, z: 0}, depth);
-                const hexagonsPositions= hexagons.map(hex => hexToPixel(hex, size));
+              for(let index=0; index < depth; index++) {
+                const hexagons = cubeRing({x: 0, y: 0, z: 0}, index+1);
+                const hexagonsPositions = hexagons.map(hex => hexToPixel(hex, size));
                 hexagonsByDepth.push(
                 {
                   hexagons: hexagonsPositions,
-                  color: { r: p.random(0, 255), g: p.random(0, 255), b: p.random(0, 255) }
+                  color: colors[index]
                 });
               }  
             }
@@ -82,18 +109,21 @@ export default function P5Sketch() {
                 p.frameRate(30);
                 let s = p.millis() / 1000;
 
-                p.background(255,0,255);
+                p.background(40,40,40);
                 const centerX = p.width/2;
                 const centerY = p.height/2;
                 
-                p.strokeWeight(6);
+                p.strokeWeight(2);
                 p.push()
                 p.translate(centerX, centerY)
+                p.fill("black");
                 drawHexagon(0, 0, size);
                 hexagonsByDepth.forEach(({hexagons, color}, index) => {
                   p.push()
-                  p.rotate(s * p.PI/12);
-                  p.fill(color.r, color.g, color.b);
+                  // if loop p.rotate((index+1) * p.sin(s) * p.PI/12 * 0.5);
+                  //if noLoop p.rotate(p.PI/12);
+                  p.rotate(p.PI/12);
+                  p.fill(color);
                   hexagons.forEach(([x, y]) => {
                     drawHexagon(x, y, size /* (s % 10)*/ );
                   });
