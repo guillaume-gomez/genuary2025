@@ -1,3 +1,4 @@
+import { useState } from "react";
 import FirstProject from "./first/App";
 import ThirdProject from "./third/App";
 import FourthProject from "./fourth/App";
@@ -12,6 +13,7 @@ import SeventeenthProject from "./seventeenth/App";
 import EighteenthProject from "./eighteenth/App";
 
 function App() {
+  const [selectedScene, setSelectedScene] = useState<number>(0);
   return (
     <div className="flex flex-col gap-2 bg-neutral-900">
 {/*      <FirstProject />
