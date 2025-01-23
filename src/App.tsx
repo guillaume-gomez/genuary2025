@@ -12,22 +12,37 @@ import FiftheenthProject from "./fifteenth/App";
 import SeventeenthProject from "./seventeenth/App";
 import EighteenthProject from "./eighteenth/App";
 
+const options = [
+  {name: "first", value: 1}
+]
+
 function App() {
   const [selectedScene, setSelectedScene] = useState<number>(0);
   return (
     <div className="flex flex-col gap-2 bg-neutral-900">
-{/*      <FirstProject />
-      <ThirdProject />
-      <FourthProject />
-      <FifthProject />
-      <SixthProject />
-      <NinthProject />*/}
-      {/*<TenthProject />*/}
-      {/*<ThirteenthProject />*/}
-     {/*<FourteenthProject />*/}
-    {/*<FiftheenthProject />*/}
-    {/*<SeventeenthProject />*/}
-    <EighteenthProject />
+      <select
+        value={selectedScene}
+        onSelect={(event) => setSelectedScene(parseInt(event.target.value))}
+      >
+        {options.map(({name, value}) => {
+          return <option value={value}> {name}</option>
+        })}
+      </select>
+      <div className="w-full h-screen">
+
+  {/*      <FirstProject />
+        <ThirdProject />
+        <FourthProject />
+        <FifthProject />
+        <SixthProject />
+        <NinthProject />*/}
+        {/*<TenthProject />*/}
+        {/*<ThirteenthProject />*/}
+       {/*<FourteenthProject />*/}
+      {/*<FiftheenthProject />*/}
+      {/*<SeventeenthProject />*/}
+      <EighteenthProject />
+      </div>
     </div>
   )
 }
