@@ -30,28 +30,30 @@ export default function P5Sketch() {
             const depth = 150;
             const perimeterCircle = 350;
             const diameterCircle = perimeterCircle/p.PI;
+            const r = 4;
+            const frequency = 2 * p.TWO_PI;
 
-            function isCollide(xCenterShape: number, yCenterShape: number, yCenterWave, index: number) {
+            function isCollide(xCenterShape: number, yCenterShape: number, yCenterWave: number) {
                 const radius = diameterCircle/2;
                 const extremumLeftX = (xCenterShape -  radius);
                 const extremumRightX = xCenterShape + radius;
 
-                const xBefore = p.map(extremumLeftX, 0, 125, 0, 2 * p.TWO_PI);
-                const yLeft = p.map(p.sin(angles[index-10]), -1, 1, -50, 50);
-                const yLeft2 = p.map(p.sin(xBefore), -1, 1, -50, 50);
-                const yRight = p.map(p.sin(angles[index+10]), -1, 1, -50, 50);
-                const yyyy = p.map(p.sin(angles[index+10]), -1, 1, -50, 50);
-                console.log(yLeft,"or ", yLeft2);
-                //console.log(yRight,"or ", yRight2);
-                
+                const xToFrequencyLeft = p.map(extremumLeftX, 0, p.width, 0, frequency);
+                const yLeft = p.map(p.sin(xToFrequencyLeft), -1, 1, -50, 50);
+
+                const xToFrequencyRight = p.map(extremumRightX, 0, p.width, 0, frequency);
+                const yRight = p.map(p.sin(xToFrequencyRight), -1, 1, -50, 50);
+
                 p.fill("purple");
                 p.circle(extremumLeftX, yLeft, 20);
-                p.circle(extremumLeftX, yLeft + depth, 20);
-                p.fill("red");
+                p.fill("blue");
+                p.circle(extremumLeftX, depth + yLeft, 20);
+                p.fill("orange");
                 p.circle(extremumRightX, yRight, 20);
-                p.circle(extremumRightX, yRight + depth, 20);
+                p.fill("green");
+                p.circle(extremumRightX, depth + yRight, 20);
                 p.fill("white");
-                p.circle(xCenterShape, yCenterShape + depth/2, 20);
+                p.circle(xCenterShape, yCenterShape, 20);
 
             }
 
@@ -59,9 +61,9 @@ export default function P5Sketch() {
             function renderShape(xCenter: number, yCenter: number, color: number) {
                 const radius = diameterCircle / 2 - 10;
                 const rotate = Math.PI/2;
-
+                
                 p.push();
-
+                
                 p.fill(color);       
                 p.translate(xCenter,yCenter);
                 p.rotate(rotate);
@@ -71,11 +73,6 @@ export default function P5Sketch() {
                 p.line(-radius, 0, radius, 0);
 
                 p.pop();
-            }
-
-            function fromPositionToIndex(x: number) : number {
-                p.width = 
-                125
             }
 
             function wave(speed: number, depth: number) {
@@ -113,12 +110,11 @@ export default function P5Sketch() {
               p.createCanvas(1000, 1000).parent(renderRef.current);
               p.background(30);
 
-              const r = 4
-              let total = p.floor(p.width / (r * 2));
-              for (let i = 0; i < total + 1; i++) {
-                angles[i] = p.map(i, 0, total, 0, 2 * p.TWO_PI);
+              //
+              const numberOfDivisionCurves = p.floor(p.width / (r * 2));
+              for (let x = 0; x < numberOfDivisionCurves + 1; x++) {
+                angles[x] = p.map(x, 0, numberOfDivisionCurves, 0, frequency);
               }
-
 
               const iteration = 8;
               const widthIteration = p.width/iteration;
@@ -142,12 +138,19 @@ export default function P5Sketch() {
 
                 const speed = 0;//0.05;
 
-                const depth = 150;
                 p.background(30);
                 shapes.forEach(({x, y, color}) => {
                     renderShape(x, y, color, Math.PI);
                 });
 
+                let indexAngle = 50;
+                const x = p.map(indexAngle, 0, angles.length, 0, p.width)
+                const y = p.map(p.sin(angles[indexAngle]), -1, 1, -50, 50);
+
+               // console.log(x, y);
+
+
+                
                 
                /* p.translate(0,p.height/6);
                 wave(speed, depth);
@@ -160,20 +163,9 @@ export default function P5Sketch() {
 
                 //p.push();
                 p.translate(0,p.height/6);
+                isCollide(x, y+depth/2, 0);
                 wave(speed, depth);
                 //p.pop();
-                const index = 50;
-
-                const x = p.map(index, 0, angles.length, 0, p.width);
-                const y = p.map(p.sin(angles[index]), -1, 1, -50, 50);
-                const yMinus = p.map(p.sin(angles[index+10]), -1, 1, -50, 50);
-                const yMax = p.map(p.sin(angles[index-10]), -1, 1, -50, 50);
-                isCollide(x, y, 0, index);
-
-
-
-
-
 
                 //p.drawingContext.filter = "blur(2px)";
 
