@@ -25,6 +25,7 @@ export default function P5Sketch() {
                 "#e23721",
                 "#0069b3"
             ];
+            let waves = [];
             let angles = []; 
             let shapes = [];
             const depth = 150;
@@ -40,34 +41,46 @@ export default function P5Sketch() {
 
                 const xToFrequencyLeft = p.map(extremumLeftX, 0, p.width, 0, frequency);
                 const yLeft = p.map(p.sin(xToFrequencyLeft), -1, 1, -50, 50);
-                //console.log(xToFrequencyLeft, "   ", yLeft)
-
                 const xToFrequencyRight = p.map(extremumRightX, 0, p.width, 0, frequency);
                 const yRight = p.map(p.sin(xToFrequencyRight), -1, 1, -50, 50);
 
-                p.fill("purple");
-                p.circle(extremumLeftX, yLeft + yCenterWave, 20);
-                p.fill("blue");
-                p.circle(extremumLeftX, depth + yLeft + yCenterWave, 20);
-                p.fill("orange");
-                p.circle(extremumRightX, yRight + yCenterWave, 20);
-                p.fill("green");
-                p.circle(extremumRightX, depth + yRight + yCenterWave, 20);
-                p.fill("white");
-                p.circle(xCenterShape, yCenterShape, 20);
+                const x1 = extremumLeftX;
+                const x2 = extremumRightX;
+                const y1 = yLeft + yCenterWave;
+                const y2 = depth + yLeft + yCenterWave;
+                const y1Prime = yRight + yCenterWave;
+                const y2Prime = depth + yRight + yCenterWave;
 
+                p.push()
+                //p.stroke("white");
+                //p.strokeWeight(3);
+                //p.line(x1, y1, x2, y1Prime);
+                //p.line(x1, y2, x2, y2Prime);
+
+                p.fill("purple");
+                p.circle(x1, y1, 20);
+                p.circle(x2, y1Prime, 20);
+                p.fill("blue");
+                p.circle(x1, y2, 20);
+                p.circle(x2, y2Prime, 20);
+                p.fill("white");
+                //p.circle(xCenterShape, yCenterShape, radius * 2);
+                p.pop()
+
+                const collisionTop = lineCircle(x1, y1, x2, y1Prime, xCenterShape, yCenterShape, radius, p);
+                const collisionBottom = lineCircle(x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius, p);
+                return collisionTop || collisionBottom;
             }
 
 
-            function renderShape(xCenter: number, yCenter: number, color: number) {
+            function renderShape(xCenter: number, yCenter: number, color: number, angle: number) {
                 const radius = diameterCircle / 2 - 10;
-                const rotate = Math.PI/2;
                 
                 p.push();
                 
                 p.fill(color);       
                 p.translate(xCenter,yCenter);
-                p.rotate(rotate);
+                p.rotate(angle);
                 p.strokeWeight(4);
                 p.circle(0,0, diameterCircle);
                 p.strokeWeight(6);
@@ -76,9 +89,13 @@ export default function P5Sketch() {
                 p.pop();
             }
 
-            function wave(speed: number, depth: number) {
+            function wave(waveIndex: number, speed: number, depth: number) {
+                const { angles, offsetY } = waves[waveIndex];
+                p.push();
+                p.translate(0, offsetY);
                 p.strokeWeight(4);
                 p.fill(255,0,0, 75);
+                
                 p.beginShape();
                 for (let i = 0; i < angles.length; i++) {
                   const y = p.map(p.sin(angles[i]), -1, 1, -50, 50);
@@ -94,6 +111,7 @@ export default function P5Sketch() {
                   p.vertex(x,y + depth + noise);
                 }
                 p.endShape();
+                p.pop();
 
                 /*for (let i = 0; i < angles.length; i++) {
                   const x = p.map(i, 0, angles.length, 0, p.width);
@@ -111,10 +129,15 @@ export default function P5Sketch() {
               p.createCanvas(1000, 1000).parent(renderRef.current);
               p.background(30);
 
-              //
+              // create a wave
               const numberOfDivisionCurves = p.floor(p.width / (r * 2));
               for (let x = 0; x < numberOfDivisionCurves + 1; x++) {
                 angles[x] = p.map(x, 0, numberOfDivisionCurves, 0, frequency);
+              }
+
+              // create the waves
+              for(let times = 0; times < 3; times++) {
+                waves.push({ angles, offsetY: 200 + (150 * 2 * times) } )
               }
 
               const iteration = 8;
@@ -141,31 +164,27 @@ export default function P5Sketch() {
 
                 p.background(30);
                 shapes.forEach(({x, y, color}) => {
-                    renderShape(x, y, color, Math.PI);
-                    isCollide(x, y, 50);
+                    const collide = waves.filter(({ offsetY }) => isCollide(x, y, offsetY) );
+                    const angle = collide.length !== 0 ? Math.PI / 4 : Math.PI;
+                    //if(collide.length === 0){
+                        renderShape(x, y, color, angle);
+                    //}
                 });
 
-                let indexAngle = 60;
-                const x = p.map(indexAngle, 0, angles.length, 0, p.width)
-                const y = p.map(p.sin(angles[indexAngle]), -1, 1, -50, 50);
 
-                p.push();
-                p.translate(0,p.height/8);
-                wave(speed, depth);
-                p.pop();
+                /*const {x, y, color} = shapes[2];
+                const collide = waves.filter(({ offsetY }) => isCollide(x, y, offsetY) );
+                console.log(collide)
+                const angle = collide.length !== 0 ? Math.PI / 4 : Math.PI;
+                renderShape(x, y, color, angle);*/
+                
+                waves.forEach((_wave, index) => {
+                    wave(index, speed, depth);
 
-                p.push()
-                p.translate(0,3*p.height/8);
-                wave(speed, depth);
-                p.pop();
-
-                p.push();
-                p.translate(0,5*p.height/8);
-                wave(speed, depth);
-                p.pop();
-
+                });
                 //p.drawingContext.filter = "blur(2px)";
 
+                p.noLoop();
 
             }
         })
