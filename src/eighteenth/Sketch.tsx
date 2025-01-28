@@ -40,18 +40,19 @@ export default function P5Sketch() {
 
                 const xToFrequencyLeft = p.map(extremumLeftX, 0, p.width, 0, frequency);
                 const yLeft = p.map(p.sin(xToFrequencyLeft), -1, 1, -50, 50);
+                //console.log(xToFrequencyLeft, "   ", yLeft)
 
                 const xToFrequencyRight = p.map(extremumRightX, 0, p.width, 0, frequency);
                 const yRight = p.map(p.sin(xToFrequencyRight), -1, 1, -50, 50);
 
                 p.fill("purple");
-                p.circle(extremumLeftX, yLeft, 20);
+                p.circle(extremumLeftX, yLeft + yCenterWave, 20);
                 p.fill("blue");
-                p.circle(extremumLeftX, depth + yLeft, 20);
+                p.circle(extremumLeftX, depth + yLeft + yCenterWave, 20);
                 p.fill("orange");
-                p.circle(extremumRightX, yRight, 20);
+                p.circle(extremumRightX, yRight + yCenterWave, 20);
                 p.fill("green");
-                p.circle(extremumRightX, depth + yRight, 20);
+                p.circle(extremumRightX, depth + yRight + yCenterWave, 20);
                 p.fill("white");
                 p.circle(xCenterShape, yCenterShape, 20);
 
@@ -94,14 +95,14 @@ export default function P5Sketch() {
                 }
                 p.endShape();
 
-                for (let i = 0; i < angles.length; i++) {
+                /*for (let i = 0; i < angles.length; i++) {
                   const x = p.map(i, 0, angles.length, 0, p.width);
                   const y = p.map(p.sin(angles[i]), -1, 1, -50, 50); 
                   p.circle(x, y + depth/2, 10);
                   p.fill("white");
                   p.line(x,y, x, y + depth/2);
                   p.line(x,y + depth/2, x, y + depth);
-                }
+                }*/
             }
 
             p.setup = () => {
@@ -141,31 +142,27 @@ export default function P5Sketch() {
                 p.background(30);
                 shapes.forEach(({x, y, color}) => {
                     renderShape(x, y, color, Math.PI);
+                    isCollide(x, y, 50);
                 });
 
-                let indexAngle = 50;
+                let indexAngle = 60;
                 const x = p.map(indexAngle, 0, angles.length, 0, p.width)
                 const y = p.map(p.sin(angles[indexAngle]), -1, 1, -50, 50);
 
-               // console.log(x, y);
-
-
-                
-                
-               /* p.translate(0,p.height/6);
+                p.push();
+                p.translate(0,p.height/8);
                 wave(speed, depth);
+                p.pop();
 
-                p.translate(0,p.height/6);
+                p.push()
+                p.translate(0,3*p.height/8);
                 wave(speed, depth);
+                p.pop();
 
-                p.translate(0,p.height/6);
-                wave(speed, depth);*/
-
-                //p.push();
-                p.translate(0,p.height/6);
-                isCollide(x, y+depth/2, 0);
+                p.push();
+                p.translate(0,5*p.height/8);
                 wave(speed, depth);
-                //p.pop();
+                p.pop();
 
                 //p.drawingContext.filter = "blur(2px)";
 
