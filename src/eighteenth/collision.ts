@@ -1,4 +1,6 @@
 
+//The files is relevant only for this sketch. Don't try to use it elsewhere wihtout adjustments
+
 function distance(x1,x2, y1,y2) {
   return Math.hypot(x2-x1, y2-y1);
 }
@@ -47,7 +49,16 @@ function linePoint(x1: number, y1: number, x2: number, y2: number, px: number, p
 }
 
 // LINE/CIRCLE
-export function lineCircle(x1: number, y1: number, x2: number, y2: number, cx: number, cy: number, radius: number, p: any): boolean {
+export function lineCircle(
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+  cx: number,
+  cy: number,
+  radius: number,
+  //p: any
+  ): boolean {
 
 
   // is either end INSIDE the circle?
@@ -105,7 +116,7 @@ export function quadCircle(
   x4: number, y4: number,
   cx: number, cy: number,
   radius: number,
-  p: any
+  //p: any
 ): boolean {
     let distX = (cx-x1);
     let distY = (cy-y1);
@@ -124,7 +135,7 @@ export function quadCircle(
     distY = (cy-y4);
    // p.line(cx, cy, x4, y4)
     const distanceRightBottomCenterCircle = Math.sqrt( (distX*distX) + (distY*distY) );
-    
+
     //x1 = x3 and x2 = y4
     if(cx < x1 || cx > x2) {
       return false;
