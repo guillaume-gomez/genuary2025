@@ -76,8 +76,6 @@ export function lineCircle(x1: number, y1: number, x2: number, y2: number, cx: n
 
   // optionally, draw a circle at the closest
   // point on the line
-  //console.log("  ", closestY)
- // console.log(y1, "= ", y2)
   if(closestX < x1 || closestX > x2) {
     return false;
   }
@@ -97,4 +95,53 @@ export function lineCircle(x1: number, y1: number, x2: number, y2: number, cx: n
   const distance = Math.sqrt( (distX*distX) + (distY*distY) );
 
   return (distance <= radius);
+}
+
+//QUAD/Circle
+export function quadCircle(
+  x1: number, y1: number,
+  x2: number, y2: number,
+  x3: number, y3: number,
+  x4: number, y4: number,
+  cx: number, cy: number,
+  radius: number,
+  p: any
+): boolean {
+    let distX = (cx-x1);
+    let distY = (cy-y1);
+    //p.strokeWeight(5);
+   // p.line(cx, cy, x1, y1)
+    const distanceLeftTopCenterCircle = Math.sqrt( (distX*distX) + (distY*distY) );
+    distX = (cx-x2);
+    distY = (cy-y2);
+    //p.line(cx, cy, x2, y2)
+    const distanceRightTopCenterCircle = Math.sqrt( (distX*distX) + (distY*distY) );
+    distX = (cx-x3);
+    distY = (cy-y3);
+   // p.line(cx, cy, x3, y3)
+    const distanceLeftBottomCenterCircle = Math.sqrt( (distX*distX) + (distY*distY) );
+    distX = (cx-x4);
+    distY = (cy-y4);
+   // p.line(cx, cy, x4, y4)
+    const distanceRightBottomCenterCircle = Math.sqrt( (distX*distX) + (distY*distY) );
+    
+    //x1 = x3 and x2 = y4
+    if(cx < x1 || cx > x2) {
+      return false;
+    }
+
+    const yTop = Math.min(y1, y2);
+    const yBottom = Math.max(y3, y4);
+
+    if(cy < yTop || cy > yBottom) {
+      return false;
+    }
+
+    return (
+      distanceLeftTopCenterCircle > radius &&
+      distanceRightTopCenterCircle > radius &&
+      distanceLeftBottomCenterCircle > radius &&
+      distanceRightBottomCenterCircle > radius 
+    );
+
 }

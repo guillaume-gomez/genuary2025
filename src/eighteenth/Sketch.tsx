@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import p5 from "p5";
-import { lineCircle } from "./collision";
+import { lineCircle, quadCircle } from "./collision";
 
 
 export default function P5Sketch() {
@@ -15,16 +15,6 @@ export default function P5Sketch() {
         new p5(p => {
             // flag to avoid to many instances of p5
             rendered.current = true;
-            const colors = [
-                "#f4a0b6",
-                "#c60b27",
-                "#0baee8",
-                "#04aa34",
-                "#ebcf06",
-                "#f0a500",
-                "#e23721",
-                "#0069b3"
-            ];
             let waves = [];
             let angles = []; 
             let shapes = [];
@@ -35,6 +25,30 @@ export default function P5Sketch() {
             const frequency = 2 * p.TWO_PI;
 
             function isCollide(xCenterShape: number, yCenterShape: number, yCenterWave: number) {
+                const radius = diameterCircle/2;
+                const extremumLeftX = (xCenterShape -  radius);
+                const extremumRightX = xCenterShape + radius;
+
+                const indexLeft = p.floor(p.map(extremumLeftX, 0, p.width, 0, angles.length));
+                const indexRight = p.floor(p.map(extremumRightX, 0, p.width, 0, angles.length));
+        
+                const yLeft = p.map(p.sin(angles[indexLeft]), -1, 1, -50, 50);
+                const yRight = p.map(p.sin(angles[indexRight]), -1, 1, -50, 50);
+
+                const x1 = extremumLeftX;
+                const x2 = extremumRightX;
+                const y1 = yLeft + yCenterWave;
+                const y2 = depth + yLeft + yCenterWave;
+                const y1Prime = yRight + yCenterWave;
+                const y2Prime = depth + yRight + yCenterWave;
+
+                const collisionTop = lineCircle(x1, y1, x2, y1Prime, xCenterShape, yCenterShape, radius, p);
+                const collisionBottom = lineCircle(x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius, p);
+                return collisionTop || collisionBottom;
+            }
+
+            function isInner(xCenterShape: number, yCenterShape: number, yCenterWave: number) {
+
                 const radius = diameterCircle/2;
                 const extremumLeftX = (xCenterShape -  radius);
                 const extremumRightX = xCenterShape + radius;
@@ -51,25 +65,7 @@ export default function P5Sketch() {
                 const y1Prime = yRight + yCenterWave;
                 const y2Prime = depth + yRight + yCenterWave;
 
-                p.push()
-                //p.stroke("white");
-                //p.strokeWeight(3);
-                //p.line(x1, y1, x2, y1Prime);
-                //p.line(x1, y2, x2, y2Prime);
-
-                p.fill("purple");
-                p.circle(x1, y1, 20);
-                p.circle(x2, y1Prime, 20);
-                p.fill("blue");
-                p.circle(x1, y2, 20);
-                p.circle(x2, y2Prime, 20);
-                p.fill("white");
-                //p.circle(xCenterShape, yCenterShape, radius * 2);
-                p.pop()
-
-                const collisionTop = lineCircle(x1, y1, x2, y1Prime, xCenterShape, yCenterShape, radius, p);
-                const collisionBottom = lineCircle(x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius, p);
-                return collisionTop || collisionBottom;
+                return quadCircle(x1,y1, x2, y1Prime, x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius, p);
             }
 
 
@@ -89,38 +85,35 @@ export default function P5Sketch() {
                 p.pop();
             }
 
-            function wave(waveIndex: number, speed: number, depth: number) {
+            function updateWave(waveIndex: number, speed: number) {
+                const { angles, offsetY } = waves[waveIndex];
+                for (let i = 0; i < angles.length; i++) {
+                    angles[i] += speed;
+                }
+            }
+
+            function renderWave(waveIndex: number, speed: number, depth: number) {
                 const { angles, offsetY } = waves[waveIndex];
                 p.push();
                 p.translate(0, offsetY);
-                p.strokeWeight(4);
-                p.fill(255,0,0, 75);
+                p.strokeWeight(0);
+                p.fill(169, 216, 224, 40);
                 
                 p.beginShape();
                 for (let i = 0; i < angles.length; i++) {
                   const y = p.map(p.sin(angles[i]), -1, 1, -50, 50);
                   const x = p.map(i, 0, angles.length, 0, p.width);
-                  const noise = 0;// p.map(p.noise(Math.random()), 0,1, -10, 10)
-                  p.vertex(x,y + noise);
-                  angles[i] += speed;
+                  //const noise = 0;// p.map(p.noise(Math.random()), 0,1, -10, 10)
+                  p.vertex(x,y);
                 }
                 for (let i = angles.length; i >= 0; i--) {
                   const y = p.map(p.sin(angles[i]), -1, 1, -50, 50);
                   const x = p.map(i, 0, angles.length, 0, p.width);
-                  const noise = p.map(p.noise(Math.random()), 0,1, -10, 10)
-                  p.vertex(x,y + depth + noise);
+                  //const noise = 0; //p.map(p.noise(Math.random()), 0,1, -10, 10)
+                  p.vertex(x,y + depth);
                 }
                 p.endShape();
                 p.pop();
-
-                /*for (let i = 0; i < angles.length; i++) {
-                  const x = p.map(i, 0, angles.length, 0, p.width);
-                  const y = p.map(p.sin(angles[i]), -1, 1, -50, 50); 
-                  p.circle(x, y + depth/2, 10);
-                  p.fill("white");
-                  p.line(x,y, x, y + depth/2);
-                  p.line(x,y + depth/2, x, y + depth);
-                }*/
             }
 
             p.setup = () => {
@@ -144,12 +137,11 @@ export default function P5Sketch() {
               const widthIteration = p.width/iteration;
               const heightIteration = p.height/iteration;
               for(let x=0; x < iteration; x++) {
-                const color = colors[ Math.floor(Math.random() * colors.length) ];
                 for(let y=0; y < iteration; y++) {
                     shapes.push({
                         x: (x * widthIteration) + widthIteration/2 ,
                         y: (y * heightIteration) + heightIteration/2,
-                        color
+                        angle: 0
                     });
                 }
               }
@@ -157,34 +149,37 @@ export default function P5Sketch() {
 
             p.draw = () => {
                 p.frameRate(30);
-                let s = p.millis() / 1000;
-                let duration = s * 2.0;
-
-                const speed = 0;//0.05;
+                const speed = 0.01; //0.05;
 
                 p.background(30);
-                shapes.forEach(({x, y, color}) => {
+                shapes.forEach(({x, y, angle}, index) => {
+                    let force = 0;
+                    let color = "#a9d8e0";
                     const collide = waves.filter(({ offsetY }) => isCollide(x, y, offsetY) );
-                    const angle = collide.length !== 0 ? Math.PI / 4 : Math.PI;
-                    //if(collide.length === 0){
-                        renderShape(x, y, color, angle);
-                    //}
+                    if(collide.length > 0) {
+                        force = 0.02;
+                        color = "#70b8d7";
+                    }
+                    else {
+                        const inner = waves.filter(({ offsetY }) => isInner(x, y, offsetY) );
+                        if(inner.length > 0) {
+                            force = 0.08;
+                            color= "#0c789d";
+                        }
+
+                    }
+                    const newAngle = Math.max( (angle + force), Math.PI/2);
+                    shapes[index] = { x, y, angle: newAngle };
+                    const noise = p.map(p.noise(Math.random()), 0,1, -0.05, 0.05)
+                    renderShape(x, y, color, newAngle - noise);
                 });
-
-
-                /*const {x, y, color} = shapes[2];
-                const collide = waves.filter(({ offsetY }) => isCollide(x, y, offsetY) );
-                console.log(collide)
-                const angle = collide.length !== 0 ? Math.PI / 4 : Math.PI;
-                renderShape(x, y, color, angle);*/
                 
                 waves.forEach((_wave, index) => {
-                    wave(index, speed, depth);
-
+                    updateWave(index, speed);
+                    renderWave(index, speed, depth);
                 });
-                //p.drawingContext.filter = "blur(2px)";
 
-                p.noLoop();
+                //p.noLoop();
 
             }
         })
