@@ -17,14 +17,16 @@ export default function P5Sketch() {
             // flag to avoid to many instances of p5
             rendered.current = true;
 
-            function createGrid(width: number, height: number, cellWidth: number, cellHeight: number) {
+            function createGrid(width: number, height: number, cellWidth: number, cellHeight: number, centered: boolean) {
                 let fillColor = 255;
                 let itColor = 255;
                 p.push();
-                for(let x =0; x < width; x+= cellWidth) {
+                const startX = centered ? - p.width/2 : 0;
+                const startY = centered ? - p.height/2 : 0;
+                for(let x = startX; x < width; x+= cellWidth) {
                     itColor = 255 - itColor;
                     fillColor = itColor
-                    for(let y = 0; y < height; y += cellHeight) {
+                    for(let y = startY; y < height; y += cellHeight) {
                         fillColor = 255 - fillColor
                         p.fill(fillColor);
                         p.rect(x, y, cellWidth, cellHeight);
@@ -32,6 +34,23 @@ export default function P5Sketch() {
                 }
                 p.pop();
             }
+
+            function drawCircle(s: number, centerX: number, centerY: number, circleRadius: number, radiusMove: number, direction: number) {
+                const xRect = p.map(p.cos(s*2 * direction), -1, 1, -radiusMove, radiusMove);
+                const yRect = p.map(p.sin(s*2 * direction), -1, 1, -radiusMove, radiusMove);
+                p.circle(centerX + xRect, centerY + yRect , circleRadius);
+
+
+            }
+
+            function drawBackCircles(s: number) {
+                drawCircle(s, 400, 400, 200, 300, 1);
+                drawCircle(s, 150, 150, 100, 100, 1);
+                drawCircle(s, p.width - 150, 150, 100, 100, 1);
+                drawCircle(s, 150, p.height - 150, 100, 100, -1);
+                drawCircle(s, p.width - 150, p.height - 150, 100, 100, 1);
+            }
+
 
             p.setup = () => {
                 p.createCanvas(800, 800).parent(renderRef.current);
@@ -46,19 +65,17 @@ export default function P5Sketch() {
                 p.background(220);
 
                 p.drawingContext.save();
-                const widthCell = p.map(p.sin(s), -1, 1, 50, 100);
-                createGrid(p.width, p.height, widthCell, widthCell);
+                const widthCell = p.map(p.sin(s), -1, 1, 40, 180);
+                createGrid(1.5 * p.width, 1.5 * p.height, widthCell, widthCell, true);
                 p.fill(0);
-                const radius = 200;
-                const xRect = p.map(p.cos(s*2), -1, 1, radius, 2*radius);
-                const yRect = p.map(p.sin(s*2), -1, 1, radius, 2*radius);
-                
-                p.circle(200 + xRect, 200 + yRect, 200);
-                p.drawingContext.clip();
+
+                p.push();
+                // Create a mask.
+                p.clip(() => drawBackCircles(s));
+                // Draw a backing shape.
                 createGrid(p.width, p.height, 40, 40);
-                p.drawingContext.restore();
-                p.fill(12)
-                //p.rect(150,150,200,200);
+                p.pop();
+                            
                 //p.noLoop();              
    
             }
