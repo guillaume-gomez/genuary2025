@@ -11,9 +11,12 @@ import FourteenthProject from "./fourtheenth/App";
 import FiftheenthProject from "./fifteenth/App";
 import SeventeenthProject from "./seventeenth/App";
 import EighteenthProject from "./eighteenth/App";
+import NineteenthProject from "./nineteenth/App";
 
 const options = [
-  {name: "first", value: 1}
+  {name: "first", value: 1},
+  {name: "second", value: 2},
+  {name: "third", value: 3},
 ]
 
 function App() {
@@ -25,7 +28,7 @@ function App() {
         onSelect={(event) => setSelectedScene(parseInt(event.target.value))}
       >
         {options.map(({name, value}) => {
-          return <option value={value}> {name}</option>
+          return <option key={value} value={value}> {name}</option>
         })}
       </select>
       <div className="w-full h-screen">
@@ -41,7 +44,8 @@ function App() {
        {/*<FourteenthProject />*/}
       {/*<FiftheenthProject />*/}
       {/*<SeventeenthProject />*/}
-      <EighteenthProject />
+{/*      <EighteenthProject />*/}
+      <NineteenthProject />
       </div>
     </div>
   )
