@@ -9,7 +9,7 @@ import FallBackLoader from "../first/FallBackLoader";
 import { Bloom, EffectComposer, Noise, Vignette, Pixelation,BrightnessContrast  } from '@react-three/postprocessing'
 import { ToneMappingMode, BlendFunction } from 'postprocessing'
 import { useControls } from 'leva';
-
+import Room from "./Room";
 
 const material = new MeshStandardMaterial({
   color: "#151515",
@@ -50,7 +50,7 @@ function ThreejsRenderer({
         <Suspense fallback={<FallBackLoader/>}>
           <ambientLight intensity={0.5} />
           {/*<Stage preset="rembrandt" intensity={0.1} environment={null}>*/}
-            <group rotation={[Math.PI/2, 0, 0]}>
+           {/* <group rotation={[Math.PI/2, 0, 0]}>
               <mesh
                 castShadow
                 receiveShadow
@@ -60,16 +60,12 @@ function ThreejsRenderer({
               >
                 <boxGeometry args={[width, height, depth]} />
                 <meshStandardMaterial color="#FF00F0" />
-                 <Edges linewidth={20} threshold={15} color={hovered ? "#c02040" : "black"} />
-      <Outlines thickness={0.01} color={hovered ? "#c02040" : "black"} />
+                  <Edges linewidth={20} threshold={15} color={hovered ? "#c02040" : "black"} />
+                  <Outlines thickness={0.01} color={hovered ? "#c02040" : "black"} />
               </mesh>
-            </group>
-
-            {/*floor*/}
-            <mesh position={[0,0,0]} rotation={[Math.PI/2, 0, 0]}>
-              <planeGeometry args={[20, 20]} />
-              <meshStandardMaterial color="red" />
-            </mesh> 
+            </group>*/} 
+            {/* house */}
+            <Room position={[0, 0, 0]} width={20} height={15} depth={1} />
 
             <Grid args={[50, 50]} position={[0,0,0]} cellColor='blue' />
           {/*</Stage>*/}
