@@ -65,7 +65,17 @@ function ThreejsRenderer({
               </mesh>
             </group>*/} 
             {/* house */}
-            <Room position={[0, 0, 0]} width={20} height={15} depth={1} />
+            <Room
+              holes={[
+                {direction: "N", begin:3, end: 5},
+                {direction: "N", begin:7, end: 9},
+                {direction: "S", begin:5, end: 15}
+              ]}
+              position={[0, 0, 0]}
+              width={20}
+              height={15}
+              depth={1}
+            />
 
             <Grid args={[50, 50]} position={[0,0,0]} cellColor='blue' />
           {/*</Stage>*/}
