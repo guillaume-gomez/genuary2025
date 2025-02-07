@@ -37,7 +37,7 @@ function Room ({
 
     function sortHoles(direction: WallDirection) {
         let holesByDirection = findHolesByWall(direction);
-        holesByDirection.sort((a,b) => a.begin < b.begin);
+        holesByDirection.sort((a,b) => a.begin - b.begin);
         return holesByDirection;
     }
 
@@ -49,6 +49,17 @@ function Room ({
     function buildSouth() {
         const sortedHoles = sortHoles("S");
         return buildNorthAndSouth(sortedHoles);        
+    }
+
+
+    function buildEast() {
+        const sortedHoles = sortHoles("E");
+        return buildEstAndWestAndSouth(sortedHoles);        
+    }
+
+    function buildWest() {
+        const sortedHoles = sortHoles("W");
+        return buildEstAndWestAndSouth(sortedHoles);        
     }
 
 
@@ -78,6 +89,33 @@ function Room ({
 
     }
 
+
+    function buildEstAndWestAndSouth(holes: Hole[]) {
+        let xBegin = 0;
+        let geometriesData = holes.map((hole, index) => {
+            const coords = [xBegin, hole.begin]; 
+            xBegin = hole.end;
+            return coords;
+        });
+
+        if(holes[holes.length -1].end != height) {
+           geometriesData = [...geometriesData, [holes[holes.length -1].end, height]]
+        }
+
+        return geometriesData.map(([start, end], index) => {
+            const distanceHeight = (end - start);
+            return <mesh
+                key={`${start}-${end}`}
+                position={[0,0,start + distanceHeight/2 ]}
+                material={material}
+                >
+                <boxGeometry args={[depth, wallHeight, distanceHeight]}/>
+                </mesh>
+        });
+    }
+
+    const scaleWall = (height -2) / height;
+
     return (
         <group position={position}>
             {/*floor*/}
@@ -95,33 +133,27 @@ function Room ({
                 { buildNorth() }
             </group>
 
-            {/* north */}
-{/*            /*<mesh
-                position={[0, wallHeight/2, -(height/2 - depth/2)]}
-                material={material}
-            >
-              <boxGeometry args={[width, wallHeight, depth]}/>
-            </mesh>*/}
-
             <group
                 position={[-width/2, wallHeight/2, -(height/2 - depth/2)]}
             >
                 { buildSouth() }
             </group>
-
-            <mesh
-                position={[width/2 - depth/2, wallHeight/2,0]}
-                material={material}
+    
+            <group
+                position={[-(width/2 - depth/2), wallHeight/2, -height/2  + 1]}
+                scale={[1,1, scaleWall]}
             >
-              <boxGeometry args={[depth, wallHeight, height - 2]}/>
-            </mesh>
+             { buildEast() }
+            </group>
 
-            <mesh
-                position={[-(width/2 - depth/2), wallHeight/2,0]}
-                material={material}
+            <group
+                position={[width/2 - depth/2, wallHeight/2, -height/2  + 1]}
+                scale={[1,1, scaleWall]}
             >
-              <boxGeometry args={[depth, wallHeight, height - 2]}/>
-            </mesh>
+                { buildWest() }
+            </group>
+
+
         </group>
     )
 
