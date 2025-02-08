@@ -16,7 +16,7 @@ interface RoomProps {
     width: number;
     height: number;
     depth: number;
-    wallHeight?: number;
+    thicknessWall?: number;
     holes: Hole[]; // one hole by wall maximum
 }
 
@@ -27,7 +27,7 @@ function Room ({
     width,
     height,
     depth,
-    wallHeight = 5,
+    thicknessWall = 1,
     holes
 } : RoomProps) {
 
@@ -41,27 +41,39 @@ function Room ({
         return holesByDirection;
     }
 
+
     function buildNorth() {
         const sortedHoles = sortHoles("N");
+        if(sortedHoles.length === 0) {
+            return buildNorthAndSouth([{begin: width, end: -1, direction: "N"}])
+        }
         return buildNorthAndSouth(sortedHoles);
     }
 
     function buildSouth() {
         const sortedHoles = sortHoles("S");
+        if(sortedHoles.length === 0) {
+            return buildNorthAndSouth([{begin: width, end: -1, direction: "S"}])
+        }
         return buildNorthAndSouth(sortedHoles);        
     }
 
 
     function buildEast() {
         const sortedHoles = sortHoles("E");
+        if(sortedHoles.length === 0) {
+            return buildEstAndWestAndSouth([{begin: depth, end: -1, direction: "E"}])
+        }
         return buildEstAndWestAndSouth(sortedHoles);        
     }
 
     function buildWest() {
         const sortedHoles = sortHoles("W");
+        if(sortedHoles.length === 0) {
+            return buildEstAndWestAndSouth([{begin: depth, end: -1, direction: "W"}])
+        }
         return buildEstAndWestAndSouth(sortedHoles);        
     }
-
 
 
     function buildNorthAndSouth(holes: Hole[]) {
@@ -83,7 +95,8 @@ function Room ({
                 position={[start + distanceWidth/2,0,0]}
                 material={material}
                 >
-                <boxGeometry args={[distanceWidth, wallHeight, depth]}/>
+               {/* //<meshStandardMaterial color={Math.random() * 0xFFFFFF} />*/}
+                <boxGeometry args={[distanceWidth, height, thicknessWall]}/>
                 </mesh>
         });
 
@@ -98,23 +111,24 @@ function Room ({
             return coords;
         });
 
-        if(holes[holes.length -1].end != height) {
-           geometriesData = [...geometriesData, [holes[holes.length -1].end, height]]
+        if(holes[holes.length -1].end != depth) {
+           geometriesData = [...geometriesData, [holes[holes.length -1].end, depth]]
         }
 
         return geometriesData.map(([start, end], index) => {
-            const distanceHeight = (end - start);
+            const distanceDepth = (end - start);
             return <mesh
                 key={`${start}-${end}`}
-                position={[0,0,start + distanceHeight/2 ]}
+                position={[0,0,start + distanceDepth/2 ]}
                 material={material}
                 >
-                <boxGeometry args={[depth, wallHeight, distanceHeight]}/>
+                {/*<meshStandardMaterial color={Math.random() * 0xFFFFFF} />*/}
+                <boxGeometry args={[thicknessWall, height, distanceDepth]}/>
                 </mesh>
         });
     }
 
-    const scaleWall = (height -2) / height;
+    const scaleWall = (depth - 2*thicknessWall) / depth;
 
     return (
         <group position={position}>
@@ -122,32 +136,32 @@ function Room ({
             <mesh
                 position={[0,0,0]} rotation={[-Math.PI/2, 0, 0]}
             >
-              <planeGeometry args={[width, height]} />
+              <planeGeometry args={[width, depth]} />
               <meshStandardMaterial color={0x400000} />
             </mesh>
 
             {/* south */}
             <group
-                position={[-width/2, wallHeight/2, height/2 - depth/2]}
+                position={[-width/2, height/2, depth/2 - thicknessWall/2]}
             >
                 { buildNorth() }
             </group>
 
             <group
-                position={[-width/2, wallHeight/2, -(height/2 - depth/2)]}
+                position={[-width/2, height/2, -(depth/2 - thicknessWall/2)]}
             >
                 { buildSouth() }
             </group>
     
             <group
-                position={[-(width/2 - depth/2), wallHeight/2, -height/2  + 1]}
+                position={[-(width/2 - thicknessWall/2), height/2, -depth/2  + thicknessWall]}
                 scale={[1,1, scaleWall]}
             >
              { buildEast() }
             </group>
 
             <group
-                position={[width/2 - depth/2, wallHeight/2, -height/2  + 1]}
+                position={[width/2 - thicknessWall/2, height/2, -depth/2 + thicknessWall]}
                 scale={[1,1, scaleWall]}
             >
                 { buildWest() }
@@ -160,9 +174,3 @@ function Room ({
 }
 
 export default Room;
-/*
-
-[0-3][5-7][9-20]
-
-*/
-
