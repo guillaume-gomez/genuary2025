@@ -65,7 +65,7 @@ export default function P5Sketch() {
                 p.background(220);
 
                 p.drawingContext.save();
-                const widthCell = p.map(p.sin(s), -1, 1, 40, 180);
+                const widthCell = p.map(p.sin(s*0.5), -1, 1, 40, 180);
                 createGrid(1.5 * p.width, 1.5 * p.height, widthCell, widthCell, true);
                 p.fill(0);
 

@@ -1,7 +1,4 @@
-import { useEffect, useMemo } from 'react';
-import { MeshStandardMaterial, BoxGeometry } from "three";
-import { easings, useTrail, useSprings } from '@react-spring/web';
-import { animated } from '@react-spring/three';
+import { MeshStandardMaterial } from "three";
 
 type WallDirection = "N"|"S"|"W"|"E";
 
@@ -17,7 +14,9 @@ interface RoomProps {
     height: number;
     depth: number;
     thicknessWall?: number;
-    holes: Hole[]; // one hole by wall maximum
+    holes: Hole[];
+    hideWall?: WallDirection[];
+
 }
 
 const material = new MeshStandardMaterial({ color: "red", wireframe: false });
@@ -28,7 +27,8 @@ function Room ({
     height,
     depth,
     thicknessWall = 1,
-    holes
+    holes,
+    hideWall = []
 } : RoomProps) {
 
     function findHolesByWall(direction: WallDirection) : Hole[] {
@@ -78,7 +78,7 @@ function Room ({
 
     function buildNorthAndSouth(holes: Hole[]) {
         let xBegin = 0;
-        let geometriesData = holes.map((hole, index) => {
+        let geometriesData = holes.map((hole) => {
             const coords = [xBegin, hole.begin]; 
             xBegin = hole.end;
             return coords;
@@ -88,7 +88,7 @@ function Room ({
            geometriesData = [...geometriesData, [holes[holes.length -1].end, width]]
         }
 
-        return geometriesData.map(([start, end], index) => {
+        return geometriesData.map(([start, end]) => {
             const distanceWidth = end - start;
             return <mesh
                 key={`${start}-${end}`}
@@ -105,7 +105,7 @@ function Room ({
 
     function buildEstAndWestAndSouth(holes: Hole[]) {
         let xBegin = 0;
-        let geometriesData = holes.map((hole, index) => {
+        let geometriesData = holes.map((hole) => {
             const coords = [xBegin, hole.begin]; 
             xBegin = hole.end;
             return coords;
@@ -115,7 +115,7 @@ function Room ({
            geometriesData = [...geometriesData, [holes[holes.length -1].end, depth]]
         }
 
-        return geometriesData.map(([start, end], index) => {
+        return geometriesData.map(([start, end]) => {
             const distanceDepth = (end - start);
             return <mesh
                 key={`${start}-${end}`}
@@ -140,32 +140,44 @@ function Room ({
               <meshStandardMaterial color={0x400000} />
             </mesh>
 
-            {/* south */}
-            <group
-                position={[-width/2, height/2, depth/2 - thicknessWall/2]}
-            >
-                { buildNorth() }
-            </group>
-
-            <group
+            {/* North */}
+            {
+                !hideWall.includes("N") &&
+                <group
+                    position={[-width/2, height/2, depth/2 - thicknessWall/2]}
+                >
+                    { buildNorth() }
+                </group>
+            }
+            {/* South */}
+            {
+                !hideWall.includes("S") &&
+                <group
                 position={[-width/2, height/2, -(depth/2 - thicknessWall/2)]}
-            >
-                { buildSouth() }
-            </group>
-    
-            <group
-                position={[-(width/2 - thicknessWall/2), height/2, -depth/2  + thicknessWall]}
-                scale={[1,1, scaleWall]}
-            >
-             { buildEast() }
-            </group>
-
-            <group
-                position={[width/2 - thicknessWall/2, height/2, -depth/2 + thicknessWall]}
-                scale={[1,1, scaleWall]}
-            >
-                { buildWest() }
-            </group>
+                >
+                    { buildSouth() }
+                </group>
+            }
+            {/* East */}
+            {
+               !hideWall.includes("E") &&
+                <group
+                    position={[-(width/2 - thicknessWall/2), height/2, -depth/2  + thicknessWall]}
+                    scale={[1,1, scaleWall]}
+                >
+                    { buildEast() }
+                </group>
+            }
+            {/* West */}
+            {
+                !hideWall.includes("W") &&
+                <group
+                    position={[width/2 - thicknessWall/2, height/2, -depth/2 + thicknessWall]}
+                    scale={[1,1, scaleWall]}
+                >
+                    { buildWest() }
+                </group>
+            }
 
 
         </group>

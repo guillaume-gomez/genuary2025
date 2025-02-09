@@ -1,40 +1,28 @@
-import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
+import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
-import { MeshStandardMaterial } from "three";
 import { Canvas } from '@react-three/fiber';
-import { easings, useSpring, useSpringRef } from '@react-spring/web';
-import { animated } from '@react-spring/three';
-import { CameraControls, GizmoHelper, GizmoViewport, Stage, Stats, Grid, Edges, Outlines } from '@react-three/drei';
+import { CameraControls, GizmoHelper, GizmoViewport, Stats, Grid } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
-import { Bloom, EffectComposer, Noise, Vignette, Pixelation,BrightnessContrast  } from '@react-three/postprocessing'
-import { ToneMappingMode, BlendFunction } from 'postprocessing'
-import { useControls } from 'leva';
+//import { useControls } from 'leva';
 import Room from "./Room";
 
-const material = new MeshStandardMaterial({
-  color: "#151515",
-  emissive: "#000000",
-  metalness: 0.758,
-  roughness:0.351
-})
 
 interface ThreeJsRendererProps {
 }
 
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
-  const [hovered, hover] = useState<boolean>(false)
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const {
     toggleFullscreen,
-    isFullscreenEnabled
+    //isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
  
   const cameraControllerRef = useRef<CameraControls|null>(null);
 
   const width = 20;
-  const height = 15;
-  const depth = 0.5;
+  const depth = 15;
+  const height = 4;
 
   return (
     <div ref={canvasContainerRef} className="w-full h-screen">
@@ -69,12 +57,15 @@ function ThreejsRenderer({
               holes={[
                 {direction: "N", begin:3, end: 5},
                 {direction: "N", begin:7, end: 9},
-                {direction: "S", begin:5, end: 15}
+                {direction: "S", begin:5, end: 15},
+                {direction: "E", begin:3, end: 4},
+                {direction: "E", begin:1, end: 2},
+                {direction: "W", begin:4, end: 6},
               ]}
               position={[0, 0, 0]}
-              width={20}
-              height={15}
-              depth={1}
+              width={width}
+              depth={depth}
+              height={height}
             />
 
             <Grid args={[50, 50]} position={[0,0,0]} cellColor='blue' />

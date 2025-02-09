@@ -12,6 +12,7 @@ import FiftheenthProject from "./fifteenth/App";
 import SeventeenthProject from "./seventeenth/App";
 import EighteenthProject from "./eighteenth/App";
 import NineteenthProject from "./nineteenth/App";
+import TwentiethProject from "./twentieth/App";
 
 const options = [
   {name: "first", value: 1},
@@ -45,7 +46,8 @@ function App() {
       {/*<FiftheenthProject />*/}
       {/*<SeventeenthProject />*/}
 {/*      <EighteenthProject />*/}
-      <NineteenthProject />
+{/*      <NineteenthProject />*/}
+      <TwentiethProject />
       </div>
     </div>
   )
