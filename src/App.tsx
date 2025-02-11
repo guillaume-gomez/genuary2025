@@ -16,12 +16,23 @@ import TwentiethProject from "./twentieth/App";
 
 const options = [
   {name: "first", value: 1},
-  {name: "second", value: 2},
   {name: "third", value: 3},
+  {name: "fourth", value: 4},
+  {name: "fifth", value: 5},
+  {name: "sixth", value: 6},
+  {name: "ninth", value: 9},
+  {name: "tenth", value: 10},
+  {name: "thirteenth", value: 13},
+  {name: "fourtheenth", value: 14},
+  {name: "fifteenth", value: 15},
+  {name: "seventeenth", value: 17},
+  {name: "eighteenth", value: 18},
+  {name: "nineteenth", value: 19},
+  {name: "twentieth", value: 20},
 ]
 
 function App() {
-  const [selectedScene, setSelectedScene] = useState<number>(0);
+  const [selectedScene, setSelectedScene] = useState<number>(1);
   return (
     <div className="flex flex-col gap-2 bg-neutral-900">
       <select
@@ -33,21 +44,20 @@ function App() {
         })}
       </select>
       <div className="w-full h-screen">
-
-  {/*      <FirstProject />
-        <ThirdProject />
-        <FourthProject />
-        <FifthProject />
-        <SixthProject />
-        <NinthProject />*/}
-        {/*<TenthProject />*/}
-        {/*<ThirteenthProject />*/}
-       {/*<FourteenthProject />*/}
-      {/*<FiftheenthProject />*/}
-      {/*<SeventeenthProject />*/}
-{/*      <EighteenthProject />*/}
-{/*      <NineteenthProject />*/}
-      <TwentiethProject />
+        { selectedScene === 1 && <FirstProject /> }
+        { selectedScene === 3 && <ThirdProject /> }
+        { selectedScene === 4 && <FourthProject /> }
+        { selectedScene === 5 && <FifthProject /> }
+        { selectedScene === 6 && <SixthProject /> }
+        { selectedScene === 9 && <NinthProject /> }
+        { selectedScene === 10 && <TenthProject /> }
+        { selectedScene === 13 && <ThirteenthProject /> }
+        { selectedScene === 14 && <FourteenthProject /> }
+        { selectedScene === 15 && <FiftheenthProject /> }
+        { selectedScene === 17 && <SeventeenthProject /> }
+        { selectedScene === 18 && <EighteenthProject /> }
+        { selectedScene === 19 && <NineteenthProject /> }
+        { selectedScene === 20 && <TwentiethProject /> }
       </div>
     </div>
   )
