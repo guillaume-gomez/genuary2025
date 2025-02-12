@@ -1,11 +1,10 @@
-import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
+import { useRef, Suspense, useEffect, useMemo } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { useSpring, easings, useSpringRef, useTrail } from '@react-spring/web';
-import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Grid, Bounds, Stats } from '@react-three/drei';
+import { easings, useTrail } from '@react-spring/web';
+import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Stats } from '@react-three/drei';
 import FallBackLoader from "./FallBackLoader";
 import Line from "./Line";
-import { GradientTexture } from '@react-three/drei';
 import SkyBox from "./SkyBox";
 
 
@@ -20,7 +19,6 @@ function ThreejsRenderer({
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const {
     toggleFullscreen,
-    isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
 
   const items = useMemo(() => placeRandomly(), []);
@@ -77,9 +75,15 @@ function ThreejsRenderer({
             shadows="contact"
           >
              <group position={[0,10,0]}>
-             {trails.map((props, index) =>
-                <Line key={index} position={items[index]} size={props.size} color={"#DDA94B"} />
-              )
+             {trails.map((props, index) => {
+                console.log(props.size)
+                return <Line
+                  key={index}
+                  position={items[index] as unknown as [number, number, number] }
+                  size={props.size as unknown as [number, number, number]}
+                  color={"#DDA94B"}
+                />
+              })
             }
             </group>
           </Stage>

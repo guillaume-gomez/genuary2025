@@ -1,4 +1,4 @@
-import { useRef, Suspense, useEffect, useState } from 'react';
+import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
 import { easings, useSpring, useSpringRef } from '@react-spring/web';
@@ -6,8 +6,8 @@ import { animated } from '@react-spring/three';
 import { CameraControls, GizmoHelper, GizmoViewport, Stats } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
 import { EffectComposer, Noise, Pixelation  } from '@react-three/postprocessing'
-import Metal from "./Metal";
 import Painting from "./Painting";
+import { Mesh } from "three";
 
 interface ThreeJsRendererProps {
 }
@@ -17,7 +17,6 @@ function ThreejsRenderer({
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const {
     toggleFullscreen,
-    isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
   /*const { x, y, z } = useControls("Light", {
     x: {value: 0, step: 0.2, min: -10, max: 10},
@@ -60,7 +59,7 @@ function ThreejsRenderer({
   );
 
   const framePosition = -20;
-  const frameRef = useRef();
+  const frameRef = useRef<Mesh>(null);
   const cameraControllerRef = useRef<CameraControls|null>(null);
 
 

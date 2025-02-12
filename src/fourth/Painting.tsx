@@ -34,6 +34,8 @@ function Painting ({onAnimationFinish} : PaintingProps) {
             easing: easings.easeOutQuart
           },
           onRest:(result, spring) => {
+            console.log(result)
+            console.log(spring)
             const numberOfAnimationFinished = springs.filter(({done}) => done.get() === 1).length;
             if(numberOfAnimationFinished === items.length) {
                 onAnimationFinish();

@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
-import { createHueShiftPalette, fromHexToLCH } from "./colors-generation.ts";
+import { createHueShiftPalette } from "./colors-generation.ts";
 
 
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
     useEffect(() => {

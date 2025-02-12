@@ -1,7 +1,6 @@
-import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
+import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { BoxGeometry, MeshStandardMaterial } from "three";
 import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Stats } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
 import Lights from "./Lights";
@@ -15,8 +14,7 @@ function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const {
-    toggleFullscreen,
-    isFullscreenEnabled
+    toggleFullscreen
   } = useFullscreen({ target: canvasContainerRef });
 
   return (

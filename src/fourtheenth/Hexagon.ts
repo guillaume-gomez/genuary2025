@@ -1,4 +1,4 @@
-https://www.redblobgames.com/grids/hexagons/#coordinates-cube
+//https://www.redblobgames.com/grids/hexagons/#coordinates-cube
 
 interface Hexagon {
 	x: number; // q

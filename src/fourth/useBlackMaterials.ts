@@ -5,23 +5,20 @@ import { MeshStandardMaterial } from "three"
 
 function useBlackMaterials() {
     const [materials, setMaterials] = useState<MeshStandardMaterial[]>([]);
-    const [heightMapLeather, normalMapLeather, roughnessMapLeather, aoMapLeather, mapLeather] = useLoader(TextureLoader, [
-      '/black-leather-bl/black-leather_height.png',
+    const [normalMapLeather, roughnessMapLeather, aoMapLeather, mapLeather] = useLoader(TextureLoader, [
       '/black-leather-bl/black-leather_normal-ogl.png',
       '/black-leather-bl/black-leather_roughness.png',
       '/black-leather-bl/black-leather_ao.png',
       '/black-leather-bl/black-leather_albedo.png'
     ]);
 
-    const [heightMapBlanket, normalMapBlanket, aoMapBlanket, mapBlanket] = useLoader(TextureLoader, [
-      '/soft-blanket-unity/soft-blanket_height.png',
+    const [normalMapBlanket, aoMapBlanket, mapBlanket] = useLoader(TextureLoader, [
       '/soft-blanket-unity/soft-blanket_normal-ogl.png',
       '/soft-blanket-unity/soft-blanket_ao.png',
       '/soft-blanket-unity/soft-blanket_albedo.png',
     ]);
 
-    const [heightMapMetal, normalMapMetal, aoMapMetal, mapMetal] = useLoader(TextureLoader, [
-      '/warped-sheet-metal-unity/warped-sheet-metal_height.png',
+    const [normalMapMetal, aoMapMetal, mapMetal] = useLoader(TextureLoader, [
       '/warped-sheet-metal-unity/warped-sheet-metal_normal-ogl.png',
       '/warped-sheet-metal-unity/warped-sheet-metal_ao.png',
       '/warped-sheet-metal-unity/warped-sheet-metal_albedo.png'
@@ -31,7 +28,6 @@ function useBlackMaterials() {
       const leather = new MeshStandardMaterial({
         color:"#222",
         normalMap:normalMapLeather,
-        heightMap:heightMapLeather,
         roughnessMap:roughnessMapLeather,
         aoMap:aoMapLeather,
         map: mapLeather
@@ -40,7 +36,6 @@ function useBlackMaterials() {
       const blanket = new MeshStandardMaterial({
         color:"#111",
         normalMap:normalMapBlanket,
-        heightMap:heightMapBlanket,
         aoMap:aoMapBlanket,
         map: mapBlanket
       });
@@ -48,7 +43,6 @@ function useBlackMaterials() {
       const metal = new MeshStandardMaterial({
         color:"#333",
         normalMap:normalMapMetal,
-        heightMap:heightMapMetal,
         aoMap:aoMapMetal,
         map: mapMetal
       });
@@ -61,9 +55,9 @@ function useBlackMaterials() {
 
       setMaterials([leather, blanket, metal, other]);
     }, [
-      heightMapLeather, normalMapLeather, roughnessMapLeather, aoMapLeather,
-      heightMapBlanket, normalMapBlanket, aoMapBlanket,
-      heightMapMetal, normalMapMetal, aoMapMetal
+      normalMapLeather, roughnessMapLeather, aoMapLeather,
+      normalMapBlanket, aoMapBlanket,
+      normalMapMetal, aoMapMetal
     ]);
 
     return materials;

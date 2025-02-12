@@ -32,12 +32,13 @@ const options = [
 ]
 
 function App() {
-  const [selectedScene, setSelectedScene] = useState<number>(1);
+  const [selectedScene, setSelectedScene] = useState<number>(20);
+
   return (
     <div className="flex flex-col gap-2 bg-neutral-900">
       <select
         value={selectedScene}
-        onSelect={(event) => setSelectedScene(parseInt(event.target.value))}
+        onChange={(event) => setSelectedScene(parseInt(event.target.value))}
       >
         {options.map(({name, value}) => {
           return <option key={value} value={value}> {name}</option>

@@ -1,10 +1,6 @@
 
 //The files is relevant only for this sketch. Don't try to use it elsewhere wihtout adjustments
 
-function distance(x1,x2, y1,y2) {
-  return Math.hypot(x2-x1, y2-y1);
-}
-
 // POINT/CIRCLE
 function pointCircle(px: number, py: number, cx: number, cy: number, r: number) :boolean {
 
@@ -23,7 +19,7 @@ function pointCircle(px: number, py: number, cx: number, cy: number, r: number) 
 }
 
 // LINE/POINT
-function linePoint(x1: number, y1: number, x2: number, y2: number, px: number, py: number) : boolean {
+/*function linePoint(x1: number, y1: number, x2: number, y2: number, px: number, py: number) : boolean {
 
   // get distance from the point to the two ends of the line
   const d1 = distance(px, x1, py, y1);
@@ -46,7 +42,7 @@ function linePoint(x1: number, y1: number, x2: number, y2: number, px: number, p
     return true;
   }
   return false;
-}
+}*/
 
 // LINE/CIRCLE
 export function lineCircle(

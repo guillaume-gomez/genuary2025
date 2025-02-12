@@ -1,4 +1,4 @@
-import { BackSide, DoubleSide } from "three";
+import { BackSide } from "three";
 import { GradientTexture } from '@react-three/drei';
 
 interface SkyBoxProps {

@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { BoxGeometry, MeshStandardMaterial } from "three";
+import { MeshStandardMaterial, Group } from "three";
 import { useFrame } from '@react-three/fiber';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { LENGTH } from "./const";
@@ -9,10 +9,14 @@ const material = new MeshStandardMaterial({color: "blue", emissive: "#000000", r
 
 
 function Shape() {
-    const groupRef = useRef();
+    const groupRef = useRef<Group>(null);
     const positions = useMemo(() => generate(), []);
 
     useFrame(({ clock }) => {
+      if(!groupRef.current) {
+        return;
+      }
+
       groupRef.current.children.forEach(child => {
         const { x, y } = child.position;
         const radiusX = Math.abs(LENGTH/2 - x);

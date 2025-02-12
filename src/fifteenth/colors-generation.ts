@@ -7,11 +7,6 @@ interface LchColor {
   h: number;
 }
 
-interface RgbColor {
-  r: number;
-  g: number;
-  b: number;
-}
 
 interface HueShiftPaletteOptions {
   base: LchColor,
@@ -27,7 +22,7 @@ function adjustHue(value: number) : number {
   return value % 360;
 }
 
-const targetHueStepsType = "analogous"|"triadic"|"tetradic"|"complementary"|"splitComplementary";
+type targetHueStepsType = "analogous"|"triadic"|"tetradic"|"complementary"|"splitComplementary";
 const targetHueSteps = {
     analogous: [0, 30, 60],
     triadic: [0, 120, 240],

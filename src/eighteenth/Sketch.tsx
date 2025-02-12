@@ -2,9 +2,13 @@ import { useEffect, useRef } from 'react';
 import p5 from "p5";
 import { lineCircle, quadCircle } from "./collision";
 
+interface Wave {
+    angles: number[];
+    offsetY: number;
+}
 
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
 
@@ -15,7 +19,7 @@ export default function P5Sketch() {
         new p5(p => {
             // flag to avoid to many instances of p5
             rendered.current = true;
-            let waves = [];
+            let waves : Wave[] = [];
             let angles = []; 
             let shapes = [];
             const depth = 150;

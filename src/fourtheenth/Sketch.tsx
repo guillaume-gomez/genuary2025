@@ -66,7 +66,7 @@ export default function P5Sketch() {
               p.pop();
             }
 
-            function drawHexagon(centerX, centerY, radius)
+            function drawHexagon(centerX : number, centerY: number, radius: number)
             {
               p.beginShape()
               for(let a = 0; a < p.TAU; a+=p.TAU/6) {
@@ -96,7 +96,7 @@ export default function P5Sketch() {
 
               for(let index=0; index < depth; index++) {
                 const hexagons = cubeRing({x: 0, y: 0, z: 0}, index+1);
-                const hexagonsPositions = hexagons.map(hex => hexToPixel(hex, size));
+                const hexagonsPositions : Array<[number, number]> = hexagons.map(hex => hexToPixel(hex, size));
                 hexagonsByDepth.push(
                 {
                   hexagons: hexagonsPositions,
@@ -107,8 +107,6 @@ export default function P5Sketch() {
 
             p.draw = () => {
                 p.frameRate(30);
-                let s = p.millis() / 1000;
-
                 p.background(40,40,40);
                 const centerX = p.width/2;
                 const centerY = p.height/2;
@@ -118,14 +116,14 @@ export default function P5Sketch() {
                 p.translate(centerX, centerY)
                 p.fill("black");
                 drawHexagon(0, 0, size);
-                hexagonsByDepth.forEach(({hexagons, color}, index) => {
+                hexagonsByDepth.forEach(({hexagons, color}) => {
                   console.log(hexagons)
                   p.push()
                   // if loop p.rotate((index+1) * p.sin(s) * p.PI/12 * 0.5);
                   //if noLoop p.rotate(p.PI/12);
                   p.rotate(p.PI/12);
                   p.fill(color);
-                  hexagons.forEach(([x, y]) => {
+                  hexagons.forEach(([x, y] : [number, number]) => {
                     drawHexagon(x, y, size /* (s % 10)*/ );
                   });
                   p.pop();

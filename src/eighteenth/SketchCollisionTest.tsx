@@ -1,9 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
 import { lineCircle } from "./collision";
 
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
 
@@ -14,8 +14,6 @@ export default function P5Sketch() {
         new p5(p => {
             // flag to avoid to many instances of p5
             rendered.current = true;
-            const cx = 0;      // circle position (set by mouse)
-            const cy = 0;
             const r =  30;     // circle radius
 
             const x1 = 240;    // coordinates of line
@@ -42,7 +40,7 @@ export default function P5Sketch() {
 
                 // check for collision
                 // if hit, change line's stroke color
-                const hit = lineCircle(x1,y1, x2,y2, cx,cy,r, p);
+                const hit = lineCircle(x1,y1, x2,y2, cx,cy,r);
                 if (hit) p.stroke(255,150,0, 150);
                 else p.stroke(0,150,255, 150);
                 p.line(x1,y1, x2,y2);

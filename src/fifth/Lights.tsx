@@ -1,19 +1,22 @@
 import { useRef } from "react";
 import { useHelper } from '@react-three/drei';
-import { PointLightHelper } from "three";
+import { PointLightHelper, PointLight } from "three";
 import { LENGTH } from "./const";
 
 
 function Lights() {
-  const ref1 = useRef()
-  const ref2 = useRef()
-  const ref3 = useRef()
-  const ref4 = useRef()
+  const ref1 = useRef<PointLight>(null)
+  const ref2 = useRef<PointLight>(null)
+  const ref3 = useRef<PointLight>(null)
+  const ref4 = useRef<PointLight>(null)
+  
   if(import.meta.env.MODE === "development") {
-    useHelper(ref1, PointLightHelper, 1)
-    useHelper(ref2, PointLightHelper, 1)
-    useHelper(ref3, PointLightHelper, 1)
-    useHelper(ref4, PointLightHelper, 1)
+    if(ref1.current && ref2.current && ref3.current && ref4.current) {
+      useHelper(ref1.current, PointLightHelper, 1)
+      useHelper(ref2.current, PointLightHelper, 1)
+      useHelper(ref3.current, PointLightHelper, 1)
+      useHelper(ref4.current, PointLightHelper, 1)
+    }
   }
 
   return (
