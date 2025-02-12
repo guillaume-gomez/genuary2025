@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
 import { cubeRing, hexToPixel } from "./Hexagon";
@@ -6,7 +6,7 @@ import { createHueShiftPalette } from "../fifteenth/colors-generation.ts";
 
 
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
     function randomColor(baseColor: [number, number, number], numberOfColor: number = 10) {
@@ -46,7 +46,7 @@ export default function P5Sketch() {
           p.pop();
         }*/   
 
-        new p5(p => {
+        new p5((p: any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
             let hexagonsByDepth = [];
@@ -119,6 +119,7 @@ export default function P5Sketch() {
                 p.fill("black");
                 drawHexagon(0, 0, size);
                 hexagonsByDepth.forEach(({hexagons, color}, index) => {
+                  console.log(hexagons)
                   p.push()
                   // if loop p.rotate((index+1) * p.sin(s) * p.PI/12 * 0.5);
                   //if noLoop p.rotate(p.PI/12);

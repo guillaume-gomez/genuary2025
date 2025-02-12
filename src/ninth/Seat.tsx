@@ -1,7 +1,6 @@
 import { useRef } from "react";
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { useLoader, useFrame } from '@react-three/fiber';
-import { RepeatWrapping, NearestFilter, DoubleSide } from "three";
+import { RepeatWrapping, NearestFilter, DoubleSide, Group, TextureLoader, Mesh, Object3D, MeshBasicMaterial } from "three";
 
 interface SeatProps {
     position: [number, number, number];
@@ -16,7 +15,7 @@ const [heightMap, normalMap, roughnessMap, aoMap] = useLoader(TextureLoader, [
 
 function Seat({position} : SeatProps) {
 
-    const groupRef = useRef();
+    const groupRef = useRef<Group>(null);
     const [alphaMap, map] = useLoader(TextureLoader, [
         '/ninth.png',
         //'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGUlEQVQoU2NkYGD4z4AHMP7//x+/gmFhAgCXphP14bko/wAAAABJRU5ErkJggg==',
@@ -28,8 +27,12 @@ function Seat({position} : SeatProps) {
     alphaMap.repeat.y = 1;
 
     useFrame(({ clock }) => {
-        groupRef.current.children.map(child => {
-            child.material.alphaMap.offset.y = clock.getElapsedTime() * 0.15;
+        if(!groupRef.current) {
+            return;
+        }
+        groupRef.current.children.map((child: Object3D) => {
+            const { material } = child as Mesh;
+            (material as MeshBasicMaterial)!.alphaMap.offset.y = clock.getElapsedTime() * 0.15;
         })
     })
 

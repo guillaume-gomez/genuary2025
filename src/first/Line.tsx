@@ -1,11 +1,11 @@
 import { useEffect } from "react";
-import { useSpring, easings, useSpringRef } from '@react-spring/web';
+import { useSpring, easings, useSpringRef, SpringValue } from '@react-spring/web';
 import { animated } from '@react-spring/three';
 import { RoundedBox } from '@react-three/drei';
 
 interface LineProps {
     position: [number, number, number];
-    size: [number, number, number];
+    size: SpringValue<number[]>;
     color: string;
 }
 

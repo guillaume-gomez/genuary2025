@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
 const paletteSky = [
@@ -54,7 +54,7 @@ const paletteMountainLight = [
 const lengthAnimation = 12000;
 
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
     useEffect(() => {
@@ -81,7 +81,7 @@ export default function P5Sketch() {
             p: any,
             position: [number, number],
             size:[number, number],
-            color
+            color: p5.Color
         ) {
             const [x, y] = position;
             const [width, height] = size;
@@ -101,7 +101,7 @@ export default function P5Sketch() {
             p.rect(x, y,80,15);
         }
 
-        new p5(p => {
+        new p5((p: any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
 

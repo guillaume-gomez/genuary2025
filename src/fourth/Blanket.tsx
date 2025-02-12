@@ -25,7 +25,7 @@ function Blanket({position, scale} : BlanketProps) {
             <meshStandardMaterial
                 color="#111"
                 normalMap={normalMap}
-                heightMap={heightMap}
+                displacementMap={heightMap}
                 aoMap={aoMap}
             />
         </mesh>

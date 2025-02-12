@@ -25,7 +25,7 @@ function Leather({position, scale} : LeatherProps) {
             <meshStandardMaterial
                 color="#222"
                 normalMap={normalMap}
-                heightMap={heightMap}
+                displacementMap={heightMap}
                 roughnessMap={roughnessMap}
                 aoMap={aoMap}
             />

@@ -26,7 +26,7 @@ function Metal({position, scale} : MetalProps) {
             <meshStandardMaterial
                 color="#444"
                 normalMap={normalMap}
-                heightMap={heightMap}
+                displacementMap={heightMap}
                 aoMap={aoMap}
             />
         </mesh>

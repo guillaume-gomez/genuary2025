@@ -1,12 +1,10 @@
-import { useRef, Suspense, useEffect, useState, useMemo } from 'react';
+import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { CameraControls, GizmoHelper, GizmoViewport, Stage, Stats, OrbitControls } from '@react-three/drei';
+import { GizmoHelper, GizmoViewport, Stage, Stats, OrbitControls } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
-import { Bloom, EffectComposer, Noise, Vignette, Pixelation,BrightnessContrast  } from '@react-three/postprocessing'
-import { ToneMappingMode, BlendFunction } from 'postprocessing'
-import { useControls } from 'leva';
-import CameraShake from "./CameraShake";
+import { EffectComposer, Noise } from '@react-three/postprocessing'
+//import CameraShake from "./CameraShake";
 import Seat from "./Seat";
 
 interface ThreeJsRendererProps {
@@ -17,24 +15,10 @@ function ThreejsRenderer({
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const {
     toggleFullscreen,
-    isFullscreenEnabled
   } = useFullscreen({ target: canvasContainerRef });
 
-  const frameRef = useRef();
-  const cameraControllerRef = useRef<CameraControls|null>(null);
-  const cameraShake = useRef(null);
+  const cameraControllerRef = useRef(null);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if(cameraControllerRef.current) {
-        console.log("fjdkfjdf")
-        cameraShake.current = new CameraShake(cameraControllerRef.current, 500, 10, 0.5 );
-        cameraShake.current.shake();
-      }
-
-    }, 2000)
-
-  }, [cameraShake.current, cameraControllerRef.current]);
 
   return (
     <div ref={canvasContainerRef} className="w-full h-screen">

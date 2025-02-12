@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { BoxGeometry } from "three";
 import useBlackMaterials from "./useBlackMaterials";
-import { easings, useTrail, useSprings } from '@react-spring/web';
+import { easings, useSprings } from '@react-spring/web';
 import { animated } from '@react-spring/three';
 
 

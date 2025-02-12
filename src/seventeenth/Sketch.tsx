@@ -1,17 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
 //https://www.mathkang.org/cite/expo20001.html
 
+interface Shape {
+    x: number;
+    y: number;
+    color: string;
+    angle: number;
+}
+
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
     useEffect(() => {
         if(rendered.current) {
             return;
         }
-        new p5(p => {
+        new p5((p: any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
             const colors = [
@@ -24,9 +31,9 @@ export default function P5Sketch() {
                 "#e23721",
                 "#0069b3"
             ];
-            let shapes = [];
+            let shapes : Shape[] = [];
             
-            function renderShape(xCenter: number, yCenter: number, color: number, piMoving: number, rotate: number) {
+            function renderShape(xCenter: number, yCenter: number, color: string, piMoving: number, rotate: number) {
                 const perimeterCircle = 350;
                 const diameterCircle = perimeterCircle/p.PI;
                 const diameterLine = perimeterCircle/piMoving;
@@ -77,10 +84,8 @@ export default function P5Sketch() {
                 p.frameRate(30);
 
                 let s = p.millis() / 1000;
-                let duration = s * 2.0;
                 const piMoving = p.map(p.sin(s), -1, 1, p.PI, 4); 
-                const rotate = s * p.PI/12;
-
+                
                 shapes.forEach(({x, y, color, angle}) => {
                     renderShape(x, y, color, piMoving, angle * p.sin(2*piMoving) );
                 });

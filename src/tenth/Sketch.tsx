@@ -1,11 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
-
-const lengthAnimation = 12000;
-
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
     useEffect(() => {
@@ -13,7 +10,7 @@ export default function P5Sketch() {
             return;
         }
 
-        new p5(p => {
+        new p5((p:any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
 

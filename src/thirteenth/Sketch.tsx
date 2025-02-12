@@ -1,9 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
+interface CustomColor {
+    red: number;
+    green: number;
+    blue: number;
+}
 
 export default function P5Sketch() {
-    const renderRef = useRef();
+    const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
     useEffect(() => {
@@ -11,7 +16,7 @@ export default function P5Sketch() {
             return;
         }
 
-         function renderTriangle(p: any, centerX: number, centerY: number, segment: number, {red, green, blue} ) {
+         function renderTriangle(p: any, centerX: number, centerY: number, segment: number, {red, green, blue} : CustomColor) {
             const height = segment * Math.sqrt(3)/2;
             const radius = height / 3;
             const x1 = centerX - segment/2;
@@ -29,7 +34,7 @@ export default function P5Sketch() {
             p.triangle(x1, y1, x2, y2, x3, y3);
         }
 
-        new p5(p => {
+        new p5((p: any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
 
