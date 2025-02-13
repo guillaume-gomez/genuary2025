@@ -90,7 +90,7 @@ export default function P5Sketch() {
             }
 
             function updateWave(waveIndex: number, speed: number) {
-                const { angles, offsetY } = waves[waveIndex];
+                const { angles } = waves[waveIndex];
                 for (let i = 0; i < angles.length; i++) {
                     angles[i] += speed;
                 }
