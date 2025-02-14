@@ -7,6 +7,12 @@ interface Wave {
     offsetY: number;
 }
 
+interface Shape {
+    x: number;
+    y: number;
+    angle: number;
+}
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -20,8 +26,8 @@ export default function P5Sketch() {
             // flag to avoid to many instances of p5
             rendered.current = true;
             let waves : Wave[] = [];
-            let angles = []; 
-            let shapes = [];
+            let angles : number[] = []; 
+            let shapes : Shape[] = [];
             const depth = 150;
             const perimeterCircle = 350;
             const diameterCircle = perimeterCircle/p.PI;
