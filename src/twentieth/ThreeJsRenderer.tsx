@@ -10,6 +10,14 @@ import Room from "./Room";
 interface ThreeJsRendererProps {
 }
 
+const grid = [
+  [-20,-20], [-10,-20], [0,-20], [10,-20], [20,-20],
+  [-20,-10], [-10,-10], [0,-10], [10,-10], [20,-10],
+  [-20,0], [-10,0], [0,0], [10,0], [20,0],
+  [-20,10], [-10,10], [0,10], [10,10], [20,10],
+  [-20,20], [-10,20], [0,20], [10,20], [20,20],
+]
+
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -20,8 +28,8 @@ function ThreejsRenderer({
  
   const cameraControllerRef = useRef<CameraControls|null>(null);
 
-  const width = 20;
-  const depth = 15;
+  const width = 10;
+  const depth = 10;
   const height = 4;
 
   return (
@@ -53,20 +61,22 @@ function ThreejsRenderer({
               </mesh>
             </group>*/} 
             {/* house */}
-            <Room
+            {grid.map(([x, z]) => 
+              <Room
               holes={[
                 {direction: "N", begin:3, end: 5},
                 {direction: "N", begin:7, end: 9},
-                {direction: "S", begin:5, end: 15},
+                {direction: "S", begin:5, end: 10},
                 {direction: "E", begin:3, end: 4},
                 {direction: "E", begin:1, end: 2},
                 {direction: "W", begin:4, end: 6},
               ]}
-              position={[0, 0, 0]}
+              position={[x, 0, z]}
               width={width}
               depth={depth}
               height={height}
-            />
+            />)
+          }
 
             <Grid args={[50, 50]} position={[0,0,0]} cellColor='blue' />
           {/*</Stage>*/}
