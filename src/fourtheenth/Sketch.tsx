@@ -5,6 +5,11 @@ import { cubeRing, hexToPixel } from "./Hexagon";
 import { createHueShiftPalette } from "../fifteenth/colors-generation.ts";
 
 
+interface HexagonP5 {
+  hexagons: Array<[number, number]>,
+  color: string;
+}
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -49,7 +54,7 @@ export default function P5Sketch() {
         new p5((p: any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
-            let hexagonsByDepth = [];
+            let hexagonsByDepth: HexagonP5[] = [];
             const size = 10;
 
 
