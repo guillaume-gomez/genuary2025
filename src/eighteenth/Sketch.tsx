@@ -52,8 +52,8 @@ export default function P5Sketch() {
                 const y1Prime = yRight + yCenterWave;
                 const y2Prime = depth + yRight + yCenterWave;
 
-                const collisionTop = lineCircle(x1, y1, x2, y1Prime, xCenterShape, yCenterShape, radius, p);
-                const collisionBottom = lineCircle(x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius, p);
+                const collisionTop = lineCircle(x1, y1, x2, y1Prime, xCenterShape, yCenterShape, radius);
+                const collisionBottom = lineCircle(x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius);
                 return collisionTop || collisionBottom;
             }
 
@@ -75,7 +75,7 @@ export default function P5Sketch() {
                 const y1Prime = yRight + yCenterWave;
                 const y2Prime = depth + yRight + yCenterWave;
 
-                return quadCircle(x1,y1, x2, y1Prime, x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius, p);
+                return quadCircle(x1,y1, x2, y1Prime, x1, y2, x2, y2Prime, xCenterShape, yCenterShape, radius);
             }
 
 
@@ -102,7 +102,7 @@ export default function P5Sketch() {
                 }
             }
 
-            function renderWave(waveIndex: number, speed: number, depth: number) {
+            function renderWave(waveIndex: number, depth: number) {
                 const { angles, offsetY } = waves[waveIndex];
                 p.push();
                 p.translate(0, offsetY);
@@ -186,7 +186,7 @@ export default function P5Sketch() {
                 
                 waves.forEach((_wave, index) => {
                     updateWave(index, speed);
-                    renderWave(index, speed, depth);
+                    renderWave(index, depth);
                 });
 
                 //p.noLoop();
