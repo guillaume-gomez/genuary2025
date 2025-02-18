@@ -81,7 +81,7 @@ export default function P5Sketch() {
 
                 p.background(30, 30, 30);
                 lines.forEach(line => {
-                    line.forEach((rect, index) => {
+                    line.forEach((rect, index: number) => {
                         const {x,y, width, height, color} = rect;
                         /*const widthTime = Math.max(
                             Math.sin((index+1) * duration) * width * (Math.sin(duration) + 1),
