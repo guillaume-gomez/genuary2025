@@ -44,8 +44,10 @@ export function createScientificPalettes(baseColor : LchColor, type: targetHueSt
       mode: "lch"
     })
   );
-  // eslint-disable-next-line no-console
-  return palette.map(color => formatHex(color) as string);
+  return palette.map(color =>
+    // @ts-ignore
+    formatHex(color) as string
+  );
 }
 
 function map(n: number, start1:number, end1: number, start2: number, end2: number) : number {
@@ -96,8 +98,10 @@ export function createHueShiftPalette(options: HueShiftPaletteOptions) : string[
       }
     ];
   }
-  // eslint-disable-next-line
-  const hexArray : string[] = palette.map(color => formatHex(color) as string);
+  const hexArray : string[] = palette.map(color =>
+    // @ts-ignore
+    formatHex(color) as string
+  );
   return hexArray;
 }
 
