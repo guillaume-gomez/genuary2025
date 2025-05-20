@@ -2,12 +2,15 @@
   "name": "genuary2025",
   "private": true,
   "version": "0.0.0",
+  "homepage": "https://guillaume-gomez.github.io/genuary2025/",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@react-spring/web": "^9.7.5",
@@ -23,6 +26,7 @@
     "color-convert": "^2.0.1",
     "colorthief": "^2.6.0",
     "culori": "^4.0.1",
+    "gh-pages": "^6.3.0",
     "lodash": "^4.17.21",
     "p5": "^1.11.2",
     "postcss": "^8.4.49",
