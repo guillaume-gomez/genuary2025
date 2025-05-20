@@ -25,7 +25,7 @@ export default function P5Sketch() {
                 "#e23721",
                 "#0069b3"
             ];
-            let waves = [];
+            let waves : string[] = [];
             const depth = 250;
             
             function wave(speed: number, depth: number) {

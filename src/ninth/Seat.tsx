@@ -32,7 +32,7 @@ function Seat({position} : SeatProps) {
         }
         groupRef.current.children.map((child: Object3D) => {
             const { material } = child as Mesh;
-            (material as MeshBasicMaterial)!.alphaMap.offset.y = clock.getElapsedTime() * 0.15;
+            (material as MeshBasicMaterial)!.alphaMap!.offset!.y = clock.getElapsedTime() * 0.15;
         })
     })
 

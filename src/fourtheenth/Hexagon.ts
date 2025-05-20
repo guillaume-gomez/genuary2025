@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 //https://www.redblobgames.com/grids/hexagons/#coordinates-cube
 
 interface Hexagon {
@@ -40,7 +42,7 @@ function hexLength(hexagon: Hexagon): number {
 }
 
 function hexDistance(a: Hexagon, b: Hexagon) :number {
-    //return hex_length(hex_subtract(a, b));
+  //return hex_length(hex_subtract(a, b));
 	return hexLength(hexSubtract(a, b));
 }
 

@@ -1,4 +1,4 @@
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
+import { TextureLoader } from 'three';
 import { useLoader } from '@react-three/fiber';
 
 interface LeatherProps {

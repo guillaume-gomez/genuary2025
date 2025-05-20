@@ -7,6 +7,10 @@ interface LchColor {
   h: number;
 }
 
+interface LchColorMode extends LchColor {
+  mode: string;
+}
+
 
 interface HueShiftPaletteOptions {
   base: LchColor,
@@ -31,7 +35,7 @@ const targetHueSteps = {
     splitComplementary: [0, 150, 210]
   };
 
-export function createScientificPalettes(baseColor : LchColor, type: targetHueStepsType) : string {
+export function createScientificPalettes(baseColor : LchColor, type: targetHueStepsType) : string[] {
   const palette = targetHueSteps[type].map((step) => (
     {
       l: baseColor.l,
@@ -40,8 +44,8 @@ export function createScientificPalettes(baseColor : LchColor, type: targetHueSt
       mode: "lch"
     })
   );
-
-  return palette.map(color => formatHex(color));
+  // eslint-disable-next-line no-console
+  return palette.map(color => formatHex(color) as string);
 }
 
 function map(n: number, start1:number, end1: number, start2: number, end2: number) : number {
@@ -52,7 +56,7 @@ export function createHueShiftPalette(options: HueShiftPaletteOptions) : string[
   const { base, minLightness, maxLightness, hueStep, numberOfColor } = options;
 
   const baseToColoriBase = {...base, mode: "lch"};
-  let palette = [];
+  let palette : LchColorMode[] = [];
 
   const numberOfLightColors = Math.floor(numberOfColor/2);
   //lighterColor
@@ -92,8 +96,9 @@ export function createHueShiftPalette(options: HueShiftPaletteOptions) : string[
       }
     ];
   }
-
-  return palette.map(color => formatHex(color));
+  // eslint-disable-next-line
+  const hexArray : string[] = palette.map(color => formatHex(color) as string);
+  return hexArray;
 }
 
 export function fromHexToLCH(hex: string) {

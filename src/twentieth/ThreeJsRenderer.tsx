@@ -1,7 +1,7 @@
 import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { CameraControls, GizmoHelper, GizmoViewport, Stats, Grid } from '@react-three/drei';
+import { CameraControls, GizmoHelper, GizmoViewport, Stats, Grid, Stage } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
 //import { useControls } from 'leva';
 import Room from "./Room";
@@ -45,7 +45,7 @@ function ThreejsRenderer({
         <color attach="background" args={["#FFF"]} />
         <Suspense fallback={<FallBackLoader/>}>
           <ambientLight intensity={0.5} />
-          {/*<Stage preset="rembrandt" intensity={0.1} environment={null}>*/}
+          <Stage preset="rembrandt" intensity={0.1} environment={null}>
            {/* <group rotation={[Math.PI/2, 0, 0]}>
               <mesh
                 castShadow
@@ -79,7 +79,7 @@ function ThreejsRenderer({
           }
 
             <Grid args={[50, 50]} position={[0,0,0]} cellColor='blue' />
-          {/*</Stage>*/}
+          </Stage>
         </Suspense>
         { import.meta.env.MODE === "development"  && <>
           <Stats/>
@@ -99,7 +99,7 @@ function ThreejsRenderer({
           minAzimuthAngle={-Math.PI / 4}
           maxAzimuthAngle={Math.PI / 4}*/
           minDistance={5}
-          maxDistance={25}
+          maxDistance={50}
         />
       </Canvas>
     </div>

@@ -79,7 +79,7 @@ export default function P5Sketch() {
             }
 
 
-            function renderShape(xCenter: number, yCenter: number, color: number, angle: number) {
+            function renderShape(xCenter: number, yCenter: number, color: string, angle: number) {
                 const radius = diameterCircle / 2 - 10;
                 
                 p.push();

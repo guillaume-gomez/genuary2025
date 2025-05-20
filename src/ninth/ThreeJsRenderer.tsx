@@ -4,7 +4,6 @@ import { Canvas } from '@react-three/fiber';
 import { GizmoHelper, GizmoViewport, Stage, Stats, OrbitControls } from '@react-three/drei';
 import FallBackLoader from "../first/FallBackLoader";
 import { EffectComposer, Noise } from '@react-three/postprocessing'
-//import CameraShake from "./CameraShake";
 import Seat from "./Seat";
 
 interface ThreeJsRendererProps {

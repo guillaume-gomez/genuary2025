@@ -2,6 +2,13 @@ import { useEffect, useRef } from 'react';
 import p5 from "p5";
 import { createHueShiftPalette } from "./colors-generation.ts";
 
+interface Rect {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color: string;
+}
 
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
@@ -34,21 +41,25 @@ export default function P5Sketch() {
         new p5(p => {
             // flag to avoid to many instances of p5
             rendered.current = true;
-            let lines = [];
+            let lines : Rect[][] = [];
 
-            function generateRandomViewport(depth: number, viewport: [number, number, number, number], baseColor: [number, number, number]) {
+            function generateRandomViewport(
+                depth: number,
+                viewport: [number, number, number, number],
+                baseColor: [number, number, number]
+            ): Rect[][] {
                 const [x, y, width, height] = viewport;
                 const colors = randomColor(baseColor, p.random(5, 20));
                 if(depth === 0) {
                     const widthStripe = width / colors.length;
-                    const lines = colors.map((color, index) => {
+                    const lines : Rect[] = colors.map((color, index) => {
                         return {
                             x:x + (index * widthStripe),
                             y,
                             width: widthStripe,
                             height,
                             color 
-                        }; 
+                        } as Rect; 
                     });
                     return [lines];
                 }
@@ -80,8 +91,8 @@ export default function P5Sketch() {
                 let duration = s * 2.0;
 
                 p.background(30, 30, 30);
-                lines.forEach(line => {
-                    line.forEach((rect, index: number) => {
+                lines.forEach(rects => {
+                    rects.forEach((rect, index: number) => {
                         const {x,y, width, height, color} = rect;
                         /*const widthTime = Math.max(
                             Math.sin((index+1) * duration) * width * (Math.sin(duration) + 1),

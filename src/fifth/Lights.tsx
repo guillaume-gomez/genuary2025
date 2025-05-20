@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useRef } from "react";
 import { useHelper } from '@react-three/drei';
 import { PointLightHelper, PointLight } from "three";

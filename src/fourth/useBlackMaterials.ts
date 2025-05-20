@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { TextureLoader } from 'three/src/loaders/TextureLoader';
 import { useLoader } from '@react-three/fiber';
-import { MeshStandardMaterial } from "three"
+import { MeshStandardMaterial, TextureLoader } from "three"
 
 function useBlackMaterials() {
     const [materials, setMaterials] = useState<MeshStandardMaterial[]>([]);
