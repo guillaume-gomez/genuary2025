@@ -32,18 +32,27 @@ const options = [
 ]
 
 function App() {
-  const [selectedScene, setSelectedScene] = useState<number>(20);
+  const [selectedScene, setSelectedScene] = useState<number>(15);
 
   return (
-    <div className="flex flex-col gap-2 bg-neutral-900">
-      <select
-        value={selectedScene}
-        onChange={(event) => setSelectedScene(parseInt(event.target.value))}
-      >
-        {options.map(({name, value}) => {
-          return <option key={value} value={value}> {name}</option>
-        })}
-      </select>
+    <div className="flex flex-col h-full gap-2 bg-neutral-900 text-white">
+      <p className="text-5xl">
+        Genuary 2025
+      </p>
+      <div className="flex flex-col gap-2">
+        <label className="text-white">
+          Change prompt
+        </label>
+        <select
+          className="select select-primary"
+          value={selectedScene}
+          onChange={(event) => setSelectedScene(parseInt(event.target.value))}
+        >
+          {options.map(({name, value}) => {
+            return <option key={value} value={value}> {name}</option>
+          })}
+        </select>
+      </div>
       <div className="w-full h-screen">
         { selectedScene === 1 && <FirstProject /> }
         { selectedScene === 3 && <ThirdProject /> }
