@@ -35,16 +35,20 @@ function App() {
   const [selectedScene, setSelectedScene] = useState<number>(15);
 
   return (
-    <div className="flex flex-col h-full gap-2 bg-neutral-900 text-white">
+    <div className="flex flex-col h-full gap-2 bg-neutral-900 text-white p-4">
       <p className="text-5xl">
         Genuary 2025
+      </p>
+      <p>
+        This is the work I done during the
+          <a className="underline px-1" href="https://genuary.art/">Genuary 2025</a>
       </p>
       <div className="flex flex-col gap-2">
         <label className="text-white">
           Change prompt
         </label>
         <select
-          className="select select-primary"
+          className="select select-primary text-black"
           value={selectedScene}
           onChange={(event) => setSelectedScene(parseInt(event.target.value))}
         >
@@ -53,7 +57,7 @@ function App() {
           })}
         </select>
       </div>
-      <div className="w-full h-screen">
+      <div className="w-full h-full">
         { selectedScene === 1 && <FirstProject /> }
         { selectedScene === 3 && <ThirdProject /> }
         { selectedScene === 4 && <FourthProject /> }
