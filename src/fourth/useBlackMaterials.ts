@@ -2,25 +2,28 @@ import { useEffect, useState } from "react";
 import { useLoader } from '@react-three/fiber';
 import { MeshStandardMaterial, TextureLoader } from "three"
 
+const { BASE_URL } = import.meta.env;
+
+
 function useBlackMaterials() {
     const [materials, setMaterials] = useState<MeshStandardMaterial[]>([]);
     const [normalMapLeather, roughnessMapLeather, aoMapLeather, mapLeather] = useLoader(TextureLoader, [
-      '/black-leather-bl/black-leather_normal-ogl.png',
-      '/black-leather-bl/black-leather_roughness.png',
-      '/black-leather-bl/black-leather_ao.png',
-      '/black-leather-bl/black-leather_albedo.png'
+      `${BASE_URL}/black-leather-bl/black-leather_normal-ogl.png`,
+      `${BASE_URL}/black-leather-bl/black-leather_roughness.png`,
+      `${BASE_URL}/black-leather-bl/black-leather_ao.png`,
+      `${BASE_URL}/black-leather-bl/black-leather_albedo.png`
     ]);
 
     const [normalMapBlanket, aoMapBlanket, mapBlanket] = useLoader(TextureLoader, [
-      '/soft-blanket-unity/soft-blanket_normal-ogl.png',
-      '/soft-blanket-unity/soft-blanket_ao.png',
-      '/soft-blanket-unity/soft-blanket_albedo.png',
+      `${BASE_URL}/soft-blanket-unity/soft-blanket_normal-ogl.png`,
+      `${BASE_URL}/soft-blanket-unity/soft-blanket_ao.png`,
+      `${BASE_URL}/soft-blanket-unity/soft-blanket_albedo.png`,
     ]);
 
     const [normalMapMetal, aoMapMetal, mapMetal] = useLoader(TextureLoader, [
-      '/warped-sheet-metal-unity/warped-sheet-metal_normal-ogl.png',
-      '/warped-sheet-metal-unity/warped-sheet-metal_ao.png',
-      '/warped-sheet-metal-unity/warped-sheet-metal_albedo.png'
+      `${BASE_URL}/warped-sheet-metal-unity/warped-sheet-metal_normal-ogl.png`,
+      `${BASE_URL}/warped-sheet-metal-unity/warped-sheet-metal_ao.png`,
+      `${BASE_URL}/warped-sheet-metal-unity/warped-sheet-metal_albedo.png`
     ]);
 
     useEffect(() => {

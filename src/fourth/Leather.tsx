@@ -1,6 +1,8 @@
 import { TextureLoader } from 'three';
 import { useLoader } from '@react-three/fiber';
 
+const { BASE_URL } = import.meta.env;
+
 interface LeatherProps {
     scale: [number, number, number];
     position: [number, number, number];
@@ -8,10 +10,10 @@ interface LeatherProps {
 
 function Leather({position, scale} : LeatherProps) {
     const [heightMap, normalMap, roughnessMap, aoMap] = useLoader(TextureLoader, [
-      '/black-leather-bl/black-leather_height.png',
-      '/black-leather-bl/black-leather_normal-ogl.png',
-      '/black-leather-bl/black-leather_roughness.png',
-      '/black-leather-bl/black-leather_ao.png',
+      `${BASE_URL}/black-leather-bl/black-leather_height.png`,
+      `${BASE_URL}/black-leather-bl/black-leather_normal-ogl.png`,
+      `${BASE_URL}/black-leather-bl/black-leather_roughness.png`,
+      `${BASE_URL}/black-leather-bl/black-leather_ao.png`,
     ]);
 
     return (

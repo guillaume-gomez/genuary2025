@@ -15,20 +15,20 @@ import NineteenthProject from "./nineteenth/App";
 import TwentiethProject from "./twentieth/App";
 
 const options = [
-  {name: "first", value: 1},
-  {name: "third", value: 3},
-  {name: "fourth", value: 4},
-  {name: "fifth", value: 5},
-  {name: "sixth", value: 6},
-  {name: "ninth", value: 9},
-  {name: "tenth", value: 10},
-  {name: "thirteenth", value: 13},
-  {name: "fourtheenth", value: 14},
-  {name: "fifteenth", value: 15},
-  {name: "seventeenth", value: 17},
-  {name: "eighteenth", value: 18},
-  {name: "nineteenth", value: 19},
-  {name: "twentieth", value: 20},
+  {name: "Vertical or horizontal lines only", value: 1},
+  {name: "Exactly 42 lines of code.", value: 3},
+  {name: "Black on black.", value: 4},
+  {name: "Isometric Art (No vanishing points).", value: 5},
+  {name: "Make a landscape using only primitive shapes.", value: 6},
+  {name: "The textile design patterns of public transport seating.", value: 9},
+  {name: "You can only use TAU in your code, no other number allowed.", value: 10},
+  {name: "Triangles and nothing else.", value: 13},
+  {name: "Design a rug.", value: 14},
+  {name: "Generative palette.", value: 15},
+  {name: "What happens if pi=4?", value: 17},
+  {name: "What does wind look like?", value: 18},
+  {name: "Op Art.", value: 19},
+  {name: "Generative Architecture.", value: 20},
 ]
 
 function App() {
