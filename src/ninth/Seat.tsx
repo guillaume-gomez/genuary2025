@@ -2,6 +2,8 @@ import { useRef } from "react";
 import { useLoader, useFrame } from '@react-three/fiber';
 import { RepeatWrapping, NearestFilter, DoubleSide, Group, TextureLoader, Mesh, Object3D, MeshBasicMaterial } from "three";
 
+const { BASE_URL } = import.meta.env;
+
 interface SeatProps {
     position: [number, number, number];
 }
@@ -17,9 +19,9 @@ function Seat({position} : SeatProps) {
 
     const groupRef = useRef<Group>(null);
     const [alphaMap, map] = useLoader(TextureLoader, [
-        '/ninth.png',
+        `${BASE_URL}/ninth.png`,
         //'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGUlEQVQoU2NkYGD4z4AHMP7//x+/gmFhAgCXphP14bko/wAAAABJRU5ErkJggg==',
-        '/seat-map.png'
+        `${BASE_URL}/seat-map.png`
     ]);
     alphaMap.magFilter = NearestFilter;
     alphaMap.wrapT = RepeatWrapping;
