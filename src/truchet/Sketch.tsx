@@ -33,11 +33,11 @@ export default function P5Sketch() {
             ];
             let shapes : Shape[] = [];
             
-            function renderShape(size: number) {
+            function renderShape(size: number, color: string) {
                 let graphic = p.createGraphics(size, size);
                 graphic.background(224);
                 graphic.noFill();
-                graphic.stroke(96);
+                graphic.stroke(color);
                 graphic.strokeWeight(size * 0.1);
                 graphic.circle(0, 0, size);
                 graphic.circle(size, size, size);
@@ -56,7 +56,9 @@ export default function P5Sketch() {
               const widthIteration = p.width/iteration;
               const heightIteration = p.height/iteration;
               
-              const cell = renderShape(p.floor(width / iteration));
+              const colorIndex = p.floor(p.random(0, colors.length));
+              const color = colors[colorIndex];
+              const cell = renderShape(p.floor(width / iteration), color);
 
                 p.background(224);
                 
