@@ -10,6 +10,18 @@ interface Shape {
     angle: number;
 }
 
+function easeInOutElastic(x: number): number {
+    const c5 = (2 * Math.PI) / 4.5;
+
+    return x === 0
+      ? 0
+      : x === 1
+      ? 1
+      : x < 0.5
+      ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
+  : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1;
+}
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -32,6 +44,8 @@ export default function P5Sketch() {
                 "#0069b3"
             ];
             let shapes : Shape[] = [];
+            const iteration = 10;
+            let cell = null;
             
             function renderShape(size: number, color: string) {
                 let graphic = p.createGraphics(size, size);
@@ -43,11 +57,12 @@ export default function P5Sketch() {
                 graphic.circle(size, size, size);
                 return graphic;
             }
+
+            
         
             p.setup = () => {
               const width = 640;
               const height = width;
-              const iteration = 10;
 
               p.createCanvas(width, height).parent(renderRef.current);
               p.imageMode(p.CENTER);
@@ -58,26 +73,34 @@ export default function P5Sketch() {
               
               const colorIndex = p.floor(p.random(0, colors.length));
               const color = colors[colorIndex];
-              const cell = renderShape(p.floor(width / iteration), color);
+              cell = renderShape(p.floor(width / iteration), color);
 
                 p.background(224);
                 
-                // debug
-                //p.image(cell, 40, 40);
-                      
 
+                // debug
+                //const size=p.floor(width / iteration);
+                //p.image(cell, size, size * 2);
+
+                      
                 for (let x = 0; x < iteration; x++) {
                     for (let y = 0; y < iteration; y++) {
-                      p.push();
-                      p.translate((x + 0.5) * p.width / iteration, (y + 0.5) * p.height / iteration);
+                     // p.push();
+                      const xx = (x + 0.5) * p.width / iteration;
+                      const yy = (y + 0.5) * p.height / iteration
+                //    p.translate(xx, yy);
+                      let angle = 0;
                       if (p.random(1.0) < 0.5) {
                         p.rotate(-p.PI/2);
+                        angle = - p.PI/2;
                       }
-                      p.image(cell, 0, 0);
-                      p.pop();
+                //     p.image(cell, 0, 0);
+                      shapes.push({x: xx, y: yy, color, angle, size: p.floor(width / iteration) });
+                //      p.pop();
                     }
                 }
 
+                console.log(shapes)
 
             }
 
@@ -85,7 +108,18 @@ export default function P5Sketch() {
                 p.frameRate(30);
 
                 let s = p.millis() / 1000;
+                p.background(224);
                 
+
+               shapes.map(shape => {
+                    const { x, y, color, angle } = shape;
+                    p.push();
+                    p.translate(x,y);
+                    p.rotate(easeInOutElastic(p.sin(1.5*s)) * p.PI/2 + angle);
+                    p.image(cell, 0, 0);
+                    p.pop(); 
+                }) 
+
             }
         })
     }, []);
