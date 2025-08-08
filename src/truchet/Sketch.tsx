@@ -46,6 +46,9 @@ export default function P5Sketch() {
             let shapes : Shape[] = [];
             const iteration = 10;
             let cell = null;
+            let cells = [];
+            let cellIndex = 0;
+            let lock = false;
             
             function renderShape(size: number, color: string) {
                 let graphic = p.createGraphics(size, size);
@@ -74,6 +77,7 @@ export default function P5Sketch() {
               const colorIndex = p.floor(p.random(0, colors.length));
               const color = colors[colorIndex];
               cell = renderShape(p.floor(width / iteration), color);
+              cells = colors.map(color => renderShape(p.floor(width / iteration), color));
 
                 p.background(224);
                 
@@ -111,12 +115,16 @@ export default function P5Sketch() {
                 p.background(224);
                 
 
-               shapes.map(shape => {
+                shapes.map(shape => {
                     const { x, y, color, angle } = shape;
+                    const sinValue = p.sin(s);
+                    /*if(p.floor(s) % 3 === 0) {
+                        cellIndex = (cellIndex + 1) % colors.length;
+                    }*/
                     p.push();
                     p.translate(x,y);
-                    p.rotate(easeInOutElastic(p.sin(1.5*s)) * p.PI/2 + angle);
-                    p.image(cell, 0, 0);
+                    p.rotate(easeInOutElastic(p.sin(s)) * p.PI/2 + angle);
+                    p.image(cells[cellIndex], 0, 0);
                     p.pop(); 
                 }) 
 
