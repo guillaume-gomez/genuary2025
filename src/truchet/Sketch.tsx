@@ -114,13 +114,17 @@ export default function P5Sketch() {
                 let s = p.millis() / 1000;
                 p.background(224);
                 
+                console.log(p.floor(s))
+
+                if(p.floor(s) % 3 === 0 && !lock) {
+                    cellIndex = (cellIndex + 1) % colors.length;
+                    lock = true;
+                } else {
+                    lock = false;
+                }
 
                 shapes.map(shape => {
                     const { x, y, color, angle } = shape;
-                    const sinValue = p.sin(s);
-                    /*if(p.floor(s) % 3 === 0) {
-                        cellIndex = (cellIndex + 1) % colors.length;
-                    }*/
                     p.push();
                     p.translate(x,y);
                     p.rotate(easeInOutElastic(p.sin(s)) * p.PI/2 + angle);
