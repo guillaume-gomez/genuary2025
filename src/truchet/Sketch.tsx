@@ -119,7 +119,7 @@ export default function P5Sketch() {
                 if(p.floor(s) % 3 === 0 && !lock) {
                     cellIndex = (cellIndex + 1) % colors.length;
                     lock = true;
-                } else {
+                } else if(p.floor(s) % 3 !== 0) {
                     lock = false;
                 }
 
