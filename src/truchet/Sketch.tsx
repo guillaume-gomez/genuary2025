@@ -45,9 +45,9 @@ export default function P5Sketch() {
             ];
             let shapes : Shape[] = [];
             const iteration = 10;
-            let cell = null;
             let cells = [];
             let cellIndex = 0;
+            let sinValue  = 0;
             let lock = false;
             
             function renderShape(size: number, color: string) {
@@ -70,13 +70,8 @@ export default function P5Sketch() {
               p.createCanvas(width, height).parent(renderRef.current);
               p.imageMode(p.CENTER);
 
-
-              const widthIteration = p.width/iteration;
-              const heightIteration = p.height/iteration;
-              
               const colorIndex = p.floor(p.random(0, colors.length));
               const color = colors[colorIndex];
-              cell = renderShape(p.floor(width / iteration), color);
               cells = colors.map(color => renderShape(p.floor(width / iteration), color));
 
                 p.background(224);
@@ -99,7 +94,7 @@ export default function P5Sketch() {
                         angle = - p.PI/2;
                       }
                 //     p.image(cell, 0, 0);
-                      shapes.push({x: xx, y: yy, color, angle, size: p.floor(width / iteration) });
+                      shapes.push({x: xx, y: yy, color, angle });
                 //      p.pop();
                     }
                 }
@@ -113,21 +108,20 @@ export default function P5Sketch() {
 
                 let s = p.millis() / 1000;
                 p.background(224);
-                
-                console.log(p.floor(s))
 
-                if(p.floor(s) % 3 === 0 && !lock) {
+                if(Math.sign(sinValue) !== Math.sign(p.sin(s)) && !lock) {
                     cellIndex = (cellIndex + 1) % colors.length;
                     lock = true;
-                } else if(p.floor(s) % 3 !== 0) {
+                } else if(Math.sign(sinValue) === Math.sign(p.sin(s)))  {
                     lock = false;
                 }
+                sinValue = p.sin(s);
 
                 shapes.map(shape => {
-                    const { x, y, color, angle } = shape;
+                    const { x, y, angle } = shape;
                     p.push();
                     p.translate(x,y);
-                    p.rotate(easeInOutElastic(p.sin(s)) * p.PI/2 + angle);
+                    p.rotate((easeInOutElastic(sinValue) * p.PI/2) + angle);
                     p.image(cells[cellIndex], 0, 0);
                     p.pop(); 
                 }) 
