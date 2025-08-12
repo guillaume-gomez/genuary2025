@@ -109,7 +109,9 @@ export default function P5Sketch() {
                 let s = p.millis() / 1000;
                 p.background(224);
 
+
                 if(Math.sign(sinValue) !== Math.sign(p.sin(s)) && !lock) {
+                    console.log(p.sin(s))
                     cellIndex = (cellIndex + 1) % colors.length;
                     lock = true;
                 } else if(Math.sign(sinValue) === Math.sign(p.sin(s)))  {
@@ -121,7 +123,7 @@ export default function P5Sketch() {
                     const { x, y, angle } = shape;
                     p.push();
                     p.translate(x,y);
-                    p.rotate((easeInOutElastic(sinValue) * p.PI/2) + angle);
+                    p.rotate((easeInOutElastic(sinValue/2) * p.PI) + angle);
                     p.image(cells[cellIndex], 0, 0);
                     p.pop(); 
                 }) 
