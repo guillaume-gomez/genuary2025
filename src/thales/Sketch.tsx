@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
+
+function droite1(x) {
+    return 1.1 * x + 4;
+}
+
+function droite2(x) {
+    return -2 * x + 2;
+}
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -25,16 +34,30 @@ export default function P5Sketch() {
             p.draw = () => {
                 p.frameRate(30);
 
-                let s = p.millis() / 1000;
+                let t = p.millis() / 1000;
                 p.background(224);
-                const x1 = width/2;
-                const y1 = height/2;
-                const x2 = x1 - 100;
-                const y2 = y1 + 200;
-                const x3 = x1 + 100;
-                const y3 = y1 + 200;
+                p.translate(width/2, height/2);
+                
+                const x1 = (0);
+                const y1 = (0);
+
+                const ratio = 0.8;
+                
+                const x2 = (x1 - 125) * p.sin(t) ;
+                const y2 = droite1(x2);
+                
+                const x3 = (x1 - 125) * p.sin(t);
+                const y3 = droite2(x3) ;
+
+                const x4 = (x1 + 125) * p.sin(t);
+                const y4 = droite1(x4) ;
+
+                const x5 = (x1 + 125) * p.sin(t);
+                const y5 = droite2(x5) ;
+
 
                 p.triangle(x1, y1, x2, y2, x3, y3);
+                p.triangle(x1, y1, x4, y4, x5, y5);
 
             }
         })
