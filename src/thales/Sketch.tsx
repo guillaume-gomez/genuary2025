@@ -10,6 +10,16 @@ function droite2(x) {
     return -2 * x + 2;
 }
 
+const paletteLake = [
+    ['#FFFFFF', 0.0],
+    ['#FF0000', 0.3],
+    ['#00FF00', 0.70],
+    ['#0000FF',0.80],
+    ['#011322', 0.85],
+];
+
+const lengthAnimation = 4000;
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -34,7 +44,7 @@ export default function P5Sketch() {
             p.draw = () => {
                 p.frameRate(30);
 
-                let t = p.millis() / 1000;
+                let t = p.millis() / (lengthAnimation) % 1;
                 p.background(224);
                 p.translate(width/2, height/2);
                 
@@ -55,9 +65,12 @@ export default function P5Sketch() {
                 const x5 = (x1 + 125) * p.sin(t);
                 const y5 = droite2(x5) ;
 
+                console.log(t);
+                p.fill(p.paletteLerp(paletteLake, t % 1000));
 
                 p.triangle(x1, y1, x2, y2, x3, y3);
                 p.triangle(x1, y1, x4, y4, x5, y5);
+
 
             }
         })
