@@ -2,11 +2,11 @@ import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
 
-function droite1(x: number) {
+function line1(x: number) {
     return 1.1 * x + 4;
 }
 
-function droite2(x : number) {
+function line2(x : number) {
     return -2 * x + 2;
 }
 
@@ -52,19 +52,19 @@ export default function P5Sketch() {
                 const x1 = (0);
                 const y1 = (0);
 
-                const variation = Math.max(0.1, p.sin(t)); 
+                const variation = Math.max(0.1, p.sin(t));
                 
                 const x2 = (x1 - 125) * variation;
-                const y2 = droite1(x2);
+                const y2 = line1(x2);
                 
                 const x3 = (x1 - 125) * variation;
-                const y3 = droite2(x3) ;
+                const y3 = line2(x3) ;
 
                 const x4 = (x1 + 125) * variation;
-                const y4 = droite1(x4) ;
+                const y4 = line1(x4) ;
 
                 const x5 = (x1 + 125) * variation;
-                const y5 = droite2(x5) ;
+                const y5 = line2(x5) ;
 
                 console.log(t);
                 
