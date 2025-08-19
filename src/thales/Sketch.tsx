@@ -10,12 +10,14 @@ function line2(x : number) {
     return -2 * x + 2;
 }
 
-const paletteLake = [
-    ['#FFFFFF', 0.0],
-    ['#FF0000', 0.3],
-    ['#00FF00', 0.70],
-    ['#0000FF',0.80],
-    ['#011322', 0.85],
+const palettesLake = [
+    [
+        ['#432371', 0.0],
+        ['#714674', 0.3],
+        ['#9F6976', 0.70],
+        ['#CC8B79',0.80],
+        ['#FAAE7B', 0.85],
+    ]
 ];
 
 const lengthAnimation = 4000;
