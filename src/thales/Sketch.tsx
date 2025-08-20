@@ -55,27 +55,29 @@ export default function P5Sketch() {
                 const y1 = (0);
 
                 const variation = Math.max(0.1, p.sin(t));
+
+                const pointShifts = [50, 75,100,125,150,175,200];
+
+                p.fill(p.paletteLerp(palettesLake[0], tAnimation % 1000));
+                pointShifts.forEach(pointShift => {
+                    const x2 = (x1 - pointShift) * variation;
+                    const y2 = line1(x2);
+                    
+                    const x3 = (x1 - pointShift) * variation;
+                    const y3 = line2(x3) ;
+
+                    const x4 = (x1 + pointShift) * variation;
+                    const y4 = line1(x4) ;
+
+                    const x5 = (x1 + pointShift) * variation;
+                    const y5 = line2(x5) ;
+
+                    p.rotate(Math.PI * t * 0.05);                
+                    p.triangle(x1, y1, x2, y2, x3, y3);
+                    p.triangle(x1, y1, x4, y4, x5, y5);
+
+                }); 
                 
-                const x2 = (x1 - 125) * variation;
-                const y2 = line1(x2);
-                
-                const x3 = (x1 - 125) * variation;
-                const y3 = line2(x3) ;
-
-                const x4 = (x1 + 125) * variation;
-                const y4 = line1(x4) ;
-
-                const x5 = (x1 + 125) * variation;
-                const y5 = line2(x5) ;
-
-                console.log(t);
-                
-                p.rotate(Math.PI * t * 0.5);                
-                p.fill(p.paletteLerp(paletteLake, tAnimation % 1000));
-                p.triangle(x1, y1, x2, y2, x3, y3);
-                p.triangle(x1, y1, x4, y4, x5, y5);
-
-
             }
         })
     }, []);
