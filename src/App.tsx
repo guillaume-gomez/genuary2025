@@ -1,81 +1,12 @@
-import { useState } from "react";
-import FirstProject from "./first/App";
-import ThirdProject from "./third/App";
-import FourthProject from "./fourth/App";
-import FifthProject from "./fifth/App";
-import SixthProject from "./sixth/App";
-import NinthProject from "./ninth/App";
-import TenthProject from "./tenth/App";
-import ThirteenthProject from "./thirteenth/App";
-import FourteenthProject from "./fourtheenth/App";
-import FiftheenthProject from "./fifteenth/App";
-import SeventeenthProject from "./seventeenth/App";
-import EighteenthProject from "./eighteenth/App";
-import NineteenthProject from "./nineteenth/App";
-import TwentiethProject from "./twentieth/App";
-import TruchetProject from "./truchet/App";
-
-const options = [
-  {name: "Vertical or horizontal lines only", value: 1},
-  {name: "Exactly 42 lines of code.", value: 3},
-  {name: "Black on black.", value: 4},
-  {name: "Isometric Art (No vanishing points).", value: 5},
-  {name: "Make a landscape using only primitive shapes.", value: 6},
-  {name: "The textile design patterns of public transport seating.", value: 9},
-  {name: "You can only use TAU in your code, no other number allowed.", value: 10},
-  {name: "Triangles and nothing else.", value: 13},
-  {name: "Design a rug.", value: 14},
-  {name: "Generative palette.", value: 15},
-  {name: "What happens if pi=4?", value: 17},
-  {name: "What does wind look like?", value: 18},
-  {name: "Op Art.", value: 19},
-  {name: "Generative Architecture.", value: 20},
-  {name: "Truchet.", value: 21},  
-]
+import App2025 from "./2025/App2025";
+import App2026 from "./App2026";
 
 function App() {
-  const [selectedScene, setSelectedScene] = useState<number>(15);
-
+  
   return (
     <div className="flex flex-col h-full gap-2 bg-neutral-900 text-white p-4">
-      <p className="text-5xl">
-        Genuary 2025
-      </p>
-      <p>
-        This is the work I done during the
-          <a className="underline px-1" href="https://genuary.art/">Genuary 2025</a>
-      </p>
-      <div className="flex flex-col gap-2">
-        <label className="text-white">
-          Change prompt
-        </label>
-        <select
-          className="select select-primary text-black"
-          value={selectedScene}
-          onChange={(event) => setSelectedScene(parseInt(event.target.value))}
-        >
-          {options.map(({name, value}) => {
-            return <option key={value} value={value}> {name}</option>
-          })}
-        </select>
-      </div>
-      <div className="w-full h-full">
-        { selectedScene === 1 && <FirstProject /> }
-        { selectedScene === 3 && <ThirdProject /> }
-        { selectedScene === 4 && <FourthProject /> }
-        { selectedScene === 5 && <FifthProject /> }
-        { selectedScene === 6 && <SixthProject /> }
-        { selectedScene === 9 && <NinthProject /> }
-        { selectedScene === 10 && <TenthProject /> }
-        { selectedScene === 13 && <ThirteenthProject /> }
-        { selectedScene === 14 && <FourteenthProject /> }
-        { selectedScene === 15 && <FiftheenthProject /> }
-        { selectedScene === 17 && <SeventeenthProject /> }
-        { selectedScene === 18 && <EighteenthProject /> }
-        { selectedScene === 19 && <NineteenthProject /> }
-        { selectedScene === 20 && <TwentiethProject /> }
-        { selectedScene === 21 && <TruchetProject /> }
-      </div>
+      <App2025 />
+      <App2026 />
     </div>
   )
 }
