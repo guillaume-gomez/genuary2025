@@ -7,6 +7,8 @@ function App() {
     <div className="flex flex-col h-full gap-2 bg-neutral-900 text-white p-4">
       <App2025 />
       <App2026 />
+    
+      <footer>Made by Guillaume Gomez</footer>
     </div>
   )
 }
