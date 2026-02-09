@@ -45,9 +45,10 @@ export default function P5Sketch() {
       return square;
     }
 
-    function drawShape(p: any, morph: p5.Vector[], x:number, y: number): void {
+    function drawShape(p: any, morph: p5.Vector[], x:number, y: number, scale: number): void {
       // Draw a polygon that makes up all the vertices
       p.beginShape();
+      p.scale(scale, scale);
       //p.noFill();
       
       morph.forEach(v => {
@@ -56,10 +57,10 @@ export default function P5Sketch() {
       p.endShape(p.CLOSE);
     }
 
-    function drawShapes(p: any, width: number, height: number, morph: p5.Vector[]): void {
+    function drawShapes(p: any, width: number, height: number, scale: number, morph: p5.Vector[]): void {
       for(let x = 0; x <= width; x+= size) {
         for(let y = 0; y <= height; y+= size) {
-          drawShape(p, morph, x, y);
+          drawShape(p, morph, x, y, scale);
         }
       }
     }
@@ -116,9 +117,10 @@ export default function P5Sketch() {
             p.draw = () => {
               p.frameRate(30);
               p.background(51,51,51);
-
-              let delta = duration * deltaTime;
               //p.noLoop();
+
+              const time = p.millis() / (duration) % 1;
+              const time2 = p.millis() / (2 * duration) % 1;
 
               // We will keep how far the vertices are from their target
               let totalDistance = 0;
@@ -137,7 +139,7 @@ export default function P5Sketch() {
                 // Lerp to the target
                 v2.lerp(v1, 0.1);
                 // Check how far we are from target
-                totalDistance += p5.Vector.dist(v1, v2);
+                totalDistance += p5.Vector.dist(v1, v2) * time;
               }
 
               // If all the vertices are close, switch shape
@@ -149,9 +151,11 @@ export default function P5Sketch() {
               p.strokeWeight(4);
               //p.noStroke();
 
-              p.fill(p.lerpColor(from, to, totalDistance/300));
+              const func = (p.cos(time2 * p.PI * 2.) + 1) * 0.5;
+
+              p.fill(p.lerpColor(from, to, func));
               
-              drawShapes(p, width, height, morph);
+              drawShapes(p, width, height, 1 , morph);
               //drawShape(p, morph, 0, 0);
 
               colorRatio = (colorRatio+ 1) % 100 ;
