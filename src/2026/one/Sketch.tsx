@@ -4,15 +4,17 @@ import p5 from "p5";
 const size = 100;
 const radius = size/2;
 const duration = 2000;
+const numberOfPoints = 40;
 
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
 
-    function createCircleVector(p: any): p5.Vector[] {
+    function createCircle(p: any): p5.Vector[] {
       let circle : p5.Vector[] = [];
+      const step = (360/numberOfPoints);
       // Create a circle using vectors pointing from center
-      for (let angle = 0; angle < 360; angle += 9) {
+      for (let angle = 0; angle < 360; angle += step)  { 
         // Note we are not starting from 0 in order to match the
         // path of a circle.
         let v = p5.Vector.fromAngle(p.radians(angle - 135));
@@ -45,6 +47,32 @@ export default function P5Sketch() {
       return square;
     }
 
+    function createTriangle(p: any): p5.Vector[] {
+      let triangle : p5.Vector[] = [];
+
+      triangle.push(...drawLine(p, -50, 50, 50, 50, 14));
+      triangle.push(...drawLine(p, 50, 50, 0, -50, 13));
+      triangle.push(...drawLine(p, 0, -50, -50, 50, 13));
+
+      return triangle;
+    }
+
+    function drawLine(p: any, x1: number, y1: number, x2: number, y2: number, nbPoints: number): p5.Vector[] {
+      let points : p5.Vector[] = [];
+
+      for (let i = 0; i <= nbPoints; i++) {
+        
+        let t = i / nbPoints;
+        let x = p.lerp(x1, x2, t);
+        let y = p.lerp(y1, y2, t);
+
+        points.push(p.createVector(x, y));
+      }
+
+      return points;
+    }
+
+
     function drawShape(p: any, morph: p5.Vector[], x:number, y: number, scale: number): void {
       // Draw a polygon that makes up all the vertices
       p.beginShape();
@@ -65,16 +93,6 @@ export default function P5Sketch() {
       }
     }
 
-    // function createTriangle(p: any): p5.Vector[] {
-    //   let triangle : p5.Vector[] = [];
-
-    //   triangle.push(p.createVector(-50, -50));
-    //   triangle.push(p.createVector(50, -50));
-    //   triangle.push(p.createVector(0, 0));
-
-    //   return triangle;
-    // }
-
     useEffect(() => {
         if(rendered.current) {
             return;
@@ -82,12 +100,13 @@ export default function P5Sketch() {
 
         let circle : p5.Vector[] = [];
         let square : p5.Vector[] = [];
+        let triangle : p5.Vector[] = [];
         let morph : p5.Vector[] = [];
 
         const width = 500 //document.body.offsetWidth - 15;
         const height = 500 //document.body.offsetHeight - 15;
 
-        let length = 2;
+        let length = 3;
         let currentShapeIndex = 0;
         let colorRatio = 0;
 
@@ -103,15 +122,17 @@ export default function P5Sketch() {
               p.createCanvas(width, height).parent(renderRef.current);
 
               // Create a circle using vectors pointing from center
-              circle = createCircleVector(p);
-
+              circle = createCircle(p);
 
               // Let's fill out morph ArrayList with blank PVectors while we are at it
-              circle.forEach(() => {
+              for(let nbPoints = 0; nbPoints < numberOfPoints; nbPoints++){
                 morph.push(p.createVector());
-              });
+              };
               
               square = createSquare(p);
+              triangle = createTriangle(p);
+
+              console.log(morph.length)
             }
 
             p.draw = () => {
@@ -120,7 +141,7 @@ export default function P5Sketch() {
               //p.noLoop();
 
               const time = p.millis() / (duration) % 1;
-              const time2 = p.millis() / (2 * duration) % 1;
+              const time2 = p.millis() / (length * duration) % 1;
 
               // We will keep how far the vertices are from their target
               let totalDistance = 0;
@@ -131,8 +152,10 @@ export default function P5Sketch() {
                 // Are we lerping to the circle or square?
                 if (currentShapeIndex === 0) {
                   v1 = circle[i];
-                } else {
+                } else if(currentShapeIndex === 1) {
                   v1 = square[i];
+                } else {
+                  v1 = triangle[i];
                 }
                 // Get the vertex we will draw
                 var v2 = morph[i];
