@@ -6,6 +6,13 @@ const radius = size/2;
 const duration = 2000;
 const numberOfPoints = 40;
 
+const palette = [
+    ['#101551', 0.0],
+    ['#ff00ff', 0.25],
+    ['#ff7c3e', 0.50],
+    ['#007c3e', 0.75],
+];
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -49,12 +56,23 @@ export default function P5Sketch() {
 
     function createTriangle(p: any): p5.Vector[] {
       let triangle : p5.Vector[] = [];
-
+      // 14, 13, 13 = 40 pts
       triangle.push(...drawLine(p, -50, 50, 50, 50, 14));
       triangle.push(...drawLine(p, 50, 50, 0, -50, 13));
       triangle.push(...drawLine(p, 0, -50, -50, 50, 13));
 
       return triangle;
+    }
+
+    function createLosange(p: any): p5.Vector[] {
+      let losange : p5.Vector[] = [];
+
+      losange.push(...drawLine(p, -50, 0, 0, 50, 10));
+      losange.push(...drawLine(p, 0, 50, 50, 0, 10));
+      losange.push(...drawLine(p, 50, 0, 0, -50, 10));
+      losange.push(...drawLine(p, 0, -50, -50, 0, 10));
+
+      return losange;
     }
 
     function drawLine(p: any, x1: number, y1: number, x2: number, y2: number, nbPoints: number): p5.Vector[] {
@@ -101,22 +119,19 @@ export default function P5Sketch() {
         let circle : p5.Vector[] = [];
         let square : p5.Vector[] = [];
         let triangle : p5.Vector[] = [];
+        let losange : p5.Vector[] = [];
         let morph : p5.Vector[] = [];
 
         const width = 500 //document.body.offsetWidth - 15;
         const height = 500 //document.body.offsetHeight - 15;
 
-        let length = 3;
+        let length = 4;
         let currentShapeIndex = 0;
         let colorRatio = 0;
 
         new p5((p: any) => {
             // flag to avoid to many instances of p5
             rendered.current = true;
-
-            let from = p.color(218, 165, 32);
-            let to = p.color(72, 61, 139);
-        
 
             p.setup = () => {
               p.createCanvas(width, height).parent(renderRef.current);
@@ -131,8 +146,7 @@ export default function P5Sketch() {
               
               square = createSquare(p);
               triangle = createTriangle(p);
-
-              console.log(morph.length)
+              losange = createLosange(p);
             }
 
             p.draw = () => {
@@ -154,8 +168,10 @@ export default function P5Sketch() {
                   v1 = circle[i];
                 } else if(currentShapeIndex === 1) {
                   v1 = square[i];
-                } else {
+                } else if(currentShapeIndex === 2) {
                   v1 = triangle[i];
+                } else {
+                  v1 = losange[i];
                 }
                 // Get the vertex we will draw
                 var v2 = morph[i];
@@ -174,9 +190,9 @@ export default function P5Sketch() {
               p.strokeWeight(4);
               //p.noStroke();
 
-              const func = (p.cos(time2 * p.PI * 2.) + 1) * 0.5;
+              const elapsed = (p.cos(time2 * p.PI * 2.) + 1) * 0.5;
 
-              p.fill(p.lerpColor(from, to, func));
+              p.fill(p.paletteLerp(palette, elapsed));
               
               drawShapes(p, width, height, 1 , morph);
               //drawShape(p, morph, 0, 0);
