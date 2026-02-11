@@ -3,9 +3,7 @@ import p5 from "p5";
 
 const size = 100;
 const radius = size/2;
-const duration = 2000;
 const numberOfPoints = 40;
-
 const palette = [
     ['#101551', 0.0],
     ['#ff00ff', 0.25],
@@ -125,9 +123,10 @@ export default function P5Sketch() {
         const width = 500 //document.body.offsetWidth - 15;
         const height = 500 //document.body.offsetHeight - 15;
 
-        let length = 4;
+        const duration = 2000;
+        const numberOfShape = 4;
+
         let currentShapeIndex = 0;
-        let colorRatio = 0;
 
         new p5((p: any) => {
             // flag to avoid to many instances of p5
@@ -155,13 +154,13 @@ export default function P5Sketch() {
               //p.noLoop();
 
               const time = p.millis() / (duration) % 1;
-              const time2 = p.millis() / (length * duration) % 1;
+              const time2 = p.millis() / (numberOfShape * duration) % 1;
 
               // We will keep how far the vertices are from their target
               let totalDistance = 0;
 
               // Look at each vertex
-              for (var i = 0; i < circle.length; i++) {
+              for (var i = 0; i < numberOfPoints; i++) {
                 var v1;
                 // Are we lerping to the circle or square?
                 if (currentShapeIndex === 0) {
@@ -183,10 +182,9 @@ export default function P5Sketch() {
 
               // If all the vertices are close, switch shape
               if (totalDistance < 0.1) {
-                currentShapeIndex = (currentShapeIndex + 1) % length;
+                currentShapeIndex = (currentShapeIndex + 1) % numberOfShape;
               }
 
-              //p.stroke(p.lerpColor(from, to, colorRatio/100));
               p.strokeWeight(4);
               //p.noStroke();
 
@@ -196,8 +194,6 @@ export default function P5Sketch() {
               
               drawShapes(p, width, height, 1 , morph);
               //drawShape(p, morph, 0, 0);
-
-              colorRatio = (colorRatio+ 1) % 100 ;
             }
         })
     }, []);
