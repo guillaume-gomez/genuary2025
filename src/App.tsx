@@ -14,6 +14,7 @@ import EighteenthProject from "./eighteenth/App";
 import NineteenthProject from "./nineteenth/App";
 import TwentiethProject from "./twentieth/App";
 import TruchetProject from "./truchet/App";
+import ThalesProject from "./thales/App";
 
 const options = [
   {name: "Vertical or horizontal lines only", value: 1},
@@ -30,7 +31,8 @@ const options = [
   {name: "What does wind look like?", value: 18},
   {name: "Op Art.", value: 19},
   {name: "Generative Architecture.", value: 20},
-  {name: "Truchet.", value: 21},  
+  {name: "Truchet.", value: 21},
+  {name: "Thales.", value: 22},  
 ]
 
 function App() {
@@ -75,6 +77,7 @@ function App() {
         { selectedScene === 19 && <NineteenthProject /> }
         { selectedScene === 20 && <TwentiethProject /> }
         { selectedScene === 21 && <TruchetProject /> }
+        { selectedScene === 22 && <ThalesProject /> }
       </div>
     </div>
   )

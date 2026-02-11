@@ -28,6 +28,16 @@ export default function P5Sketch() {
     const width = 640;
     const height = width;
 
+    const params = [
+        { pointShift: 50, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 },
+        { pointShift:75, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 },
+        { pointShift:100, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 },
+        { pointShift:125, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 },
+        { pointShift:150, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 },
+        { pointShift:175, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 },
+        { pointShift:200, angle: Math.random() * (2 * Math.PI), palettesLakeIndex: 0 }
+    ];
+
     useEffect(() => {
         if(rendered.current) {
             return;
@@ -55,11 +65,9 @@ export default function P5Sketch() {
                 const y1 = (0);
 
                 const variation = Math.max(0.1, p.sin(t));
-
-                const pointShifts = [50, 75,100,125,150,175,200];
-
+                
                 p.fill(p.paletteLerp(palettesLake[0], tAnimation % 1000));
-                pointShifts.forEach(pointShift => {
+                params.forEach(({ pointShift, angle, palettesLakeIndex }) => {
                     const x2 = (x1 - pointShift) * variation;
                     const y2 = line1(x2);
                     
@@ -72,7 +80,7 @@ export default function P5Sketch() {
                     const x5 = (x1 + pointShift) * variation;
                     const y5 = line2(x5) ;
 
-                    p.rotate(Math.PI * t * 0.05);                
+                    p.rotate(angle + Math.PI * t * 0.05);                
                     p.triangle(x1, y1, x2, y2, x3, y3);
                     p.triangle(x1, y1, x4, y4, x5, y5);
 
