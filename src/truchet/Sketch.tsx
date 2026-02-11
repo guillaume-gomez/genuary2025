@@ -45,7 +45,7 @@ export default function P5Sketch() {
             ];
             let shapes : Shape[] = [];
             const iteration = 10;
-            let cells = [];
+            let cells : any[] = [];
             let cellIndex = 0;
             let sinValue  = 0;
             let lock = false;
