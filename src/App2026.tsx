@@ -1,6 +1,7 @@
 import LayoutContainer from "./LayoutContainer";
 
-import Sketch from "./2026/one/Sketch";
+//import Sketch from "./2026/one/Sketch";
+import Sketch from "./2026/three/Sketch";
 
 function App2026() {
   
