@@ -19,7 +19,7 @@ export default function P5Sketch() {
       let circle : p5.Vector[] = [];
       const step = (360/numberOfPoints);
       // Create a circle using vectors pointing from center
-      for (let angle = 0; angle < 360; angle += step)  { 
+      for (let angle = 0; angle < 360; angle += step)  {
         // Note we are not starting from 0 in order to match the
         // path of a circle.
         let v = p5.Vector.fromAngle(p.radians(angle - 135));
@@ -77,7 +77,7 @@ export default function P5Sketch() {
       let points : p5.Vector[] = [];
 
       for (let i = 0; i <= nbPoints; i++) {
-        
+
         let t = i / nbPoints;
         let x = p.lerp(x1, x2, t);
         let y = p.lerp(y1, y2, t);
@@ -94,7 +94,7 @@ export default function P5Sketch() {
       p.beginShape();
       p.scale(scale, scale);
       //p.noFill();
-      
+
       morph.forEach(v => {
         p.vertex(v.x + x, v.y + y);
       });
@@ -142,7 +142,7 @@ export default function P5Sketch() {
               for(let nbPoints = 0; nbPoints < numberOfPoints; nbPoints++){
                 morph.push(p.createVector());
               };
-              
+
               square = createSquare(p);
               triangle = createTriangle(p);
               losange = createLosange(p);
@@ -191,7 +191,7 @@ export default function P5Sketch() {
               const elapsed = (p.cos(time2 * p.PI * 2.) + 1) * 0.5;
 
               p.fill(p.paletteLerp(palette, elapsed));
-              
+
               drawShapes(p, width, height, 1 , morph);
               //drawShape(p, morph, 0, 0);
             }

@@ -49,7 +49,7 @@ export default function P5Sketch() {
             let cellIndex = 0;
             let sinValue  = 0;
             let lock = false;
-            
+
             function renderShape(size: number, color: string) {
                 let graphic = p.createGraphics(size, size);
                 graphic.background(224);
@@ -61,8 +61,6 @@ export default function P5Sketch() {
                 return graphic;
             }
 
-            
-        
             p.setup = () => {
               const width = 640;
               const height = width;
@@ -75,13 +73,11 @@ export default function P5Sketch() {
               cells = colors.map(color => renderShape(p.floor(width / iteration), color));
 
                 p.background(224);
-                
 
                 // debug
                 //const size=p.floor(width / iteration);
                 //p.image(cell, size, size * 2);
 
-                      
                 for (let x = 0; x < iteration; x++) {
                     for (let y = 0; y < iteration; y++) {
                      // p.push();
@@ -111,7 +107,6 @@ export default function P5Sketch() {
 
 
                 if(Math.sign(sinValue) !== Math.sign(p.sin(s)) && !lock) {
-                    console.log(p.sin(s))
                     cellIndex = (cellIndex + 1) % colors.length;
                     lock = true;
                 } else if(Math.sign(sinValue) === Math.sign(p.sin(s)))  {
@@ -125,8 +120,8 @@ export default function P5Sketch() {
                     p.translate(x,y);
                     p.rotate((easeInOutElastic(sinValue/2) * p.PI) + angle);
                     p.image(cells[cellIndex], 0, 0);
-                    p.pop(); 
-                }) 
+                    p.pop();
+                })
 
             }
         })
