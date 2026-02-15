@@ -22,7 +22,9 @@ export default function P5Sketch() {
 
     function drawG(p: any, x: number, y: number, scale: number = 1) {
       p.translate(x, y);
+
       p.scale(scale, scale);
+      
       p.beginShape();
       p.vertex(0,0);
       p.vertex(100,0);
@@ -38,6 +40,8 @@ export default function P5Sketch() {
       p.vertex(0,100);
       p.vertex(0,0);
       p.endShape(p.CLOSE);
+
+      p.translate(-x, -y);
     }
 
 
@@ -87,7 +91,6 @@ export default function P5Sketch() {
               p.fill(255);
               p.clip(() => drawG(p, 100, 200, 2), { invert: true });
 
-              p.translate(-100, -200)
               p.fill(240, 12, 67);
               p.circle(width/2, height/2, 300);
 
