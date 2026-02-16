@@ -1,16 +1,20 @@
-import { useRef, Suspense, useEffect, useMemo } from 'react';
+import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { easings, useTrail } from '@react-spring/three';
-import { OrbitControls, GizmoHelper, GizmoViewport, Stage, Stats } from '@react-three/drei';
+import { 
+  Float,
+  ContactShadows,
+  OrbitControls,
+  GizmoHelper,
+  GizmoViewport, 
+  Stats,
+  Environment
+} from '@react-three/drei';
 import FallBackLoader from "../../2025/first/FallBackLoader";
 
 
 interface ThreeJsRendererProps {
 }
-
-const FROM = [4,1,0.5];
-const TO = [1,4,0.5]
 
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
@@ -18,23 +22,6 @@ function ThreejsRenderer({
   const {
     toggleFullscreen,
   } = useFullscreen({ target: canvasContainerRef });
-
-  const items = useMemo(() => placeRandomly(), []);
-  const [trails, api] = useTrail(
-    items.length,
-    () => ({
-        from: { size: FROM },
-        to: { size: TO },
-        delay: 500,
-        config: {
-          precision: 0.0001,
-          duration: 2000,
-          easing: easings.easeOutQuart
-        },
-        loop: { reverse: true }
-      }),
-    []
-  )
 
   return (
     <div ref={canvasContainerRef} className="w-full h-full h-screen">
@@ -47,15 +34,20 @@ function ThreejsRenderer({
         }}
       >
         <Suspense fallback={<FallBackLoader/>}>
-          <Stage
-            preset="upfront"
-            adjustCamera={false}
-            intensity={0.2}
-            environment={'studio'}
-            shadows="contact"
-          >
-          </Stage>
-          <SkyBox  size={25}/>
+          <ambientLight intensity={0.5 * Math.PI} />
+          <Environment preset="night"/>
+          <Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
+          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />
+
+          <group position={[0, -1.5, 0]}>
+          <Float position={[0, 2.15, 0]} speed={2} rotationIntensity={2} floatIntensity={2}>
+            <mesh castShadow receiveShadow>
+              <torusKnotGeometry args={[1, 0.25, 256, 24, 1, 3]} />
+              <meshStandardMaterial color="white" roughness={0.1} metalness={0.925} />
+            </mesh>
+          </Float>
+          <ContactShadows scale={10} blur={3} opacity={0.25} far={10} />
+        </group>
 
         </Suspense>
          { import.meta.env.MODE === "development" && (<>
@@ -70,6 +62,15 @@ function ThreejsRenderer({
       </Canvas>
     </div>
   );
+}
+
+function Striplight(props) {
+  return (
+    <mesh {...props}>
+      <boxGeometry />
+      <meshBasicMaterial color="white" />
+    </mesh>
+  )
 }
 
 export default ThreejsRenderer;
