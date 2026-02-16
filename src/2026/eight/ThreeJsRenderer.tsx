@@ -14,6 +14,8 @@ import {
 } from '@react-three/drei';
 import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
 import FallBackLoader from "../../2025/first/FallBackLoader";
+import Striplight from "./Striplight";
+import Building from "./Building";
 
 
 interface ThreeJsRendererProps {
@@ -39,9 +41,9 @@ function ThreejsRenderer({
         <Suspense fallback={<FallBackLoader/>}>
           <ambientLight intensity={0.5 * Math.PI} />
           <Environment preset="night"/>
-          <fog attach="fog" color="violet" near={0} far={20 * 2.25} />
-          {/*<Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
-          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />*/}
+          <fog attach="fog" color="purple" near={0} far={20 * 2.25} />
+          <Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
+          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />
 
           <group position={[0, -1.5, 0]}>
             <Float position={[0, 2.15, 0]} speed={2} rotationIntensity={2} floatIntensity={2}>
@@ -63,6 +65,13 @@ function ThreejsRenderer({
             <meshStandardMaterial color={[255/255 * 4, 255/255 * 4, 255/255 * 4]} wireframe={true} />
             <planeGeometry args={[20, 20, 20, 20]} />
           </mesh>
+
+          <Building
+            position={[5, 5, 5]}
+            width={4}
+            height={10}
+            depth={4}
+          />
 
           {/*<mesh>
             <boxGeometry />
@@ -95,15 +104,6 @@ function ThreejsRenderer({
       </Canvas>
     </div>
   );
-}
-
-function Striplight(props) {
-  return (
-    <mesh {...props}>
-      <boxGeometry />
-      <meshBasicMaterial color="white" />
-    </mesh>
-  )
 }
 
 export default ThreejsRenderer;
