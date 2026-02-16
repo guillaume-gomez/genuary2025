@@ -1,104 +1,99 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import p5 from "p5";
 
+import { drawG, drawE, drawN, drawU, drawR, drawA, drawY } from "./letters";
+
+const colors = [
+  "#392759",
+  "#6874E8",
+  "#E8F0FF",
+  "#F7ACCF",
+  "#7A5C61"
+]
+
 export default function P5Sketch() {
-    const renderRef = useRef<HTMLDivElement>(null);
-    const rendered = useRef(false);
+  const renderRef = useRef<HTMLDivElement>(null);
+  const rendered = useRef(false);
+  const [invert, setInvert] = useState<boolean>(false);
 
-    function drawLine(p: any, x1: number, y1: number, x2: number, y2: number, nbPoints: number): p5.Vector[] {
-      let points : p5.Vector[] = [];
-
-      for (let i = 0; i <= nbPoints; i++) {
-
-        let t = i / nbPoints;
-        let x = p.lerp(x1, x2, t);
-        let y = p.lerp(y1, y2, t);
-
-        points.push(p.createVector(x, y));
-      }
-
-      return points;
+  useEffect(() => {
+    if(rendered.current) {
+        return;
     }
 
-    function drawG(p: any, x: number, y: number, scale: number = 1) {
-      p.translate(x, y);
+    const width = 500 //document.body.offsetWidth - 15;
+    const height = 900 //document.body.offsetHeight - 15;
+    const durationGrow = 3500;
+    const letterSize = 50;
 
-      p.scale(scale, scale);
-      
-      p.beginShape();
-      p.vertex(0,0);
-      p.vertex(100,0);
-      p.vertex(100,20);
-      p.vertex(20,20);
-      p.vertex(20,80);
-      p.vertex(80,80);
-      p.vertex(80,60);
-      p.vertex(50,60);
-      p.vertex(50,40);
-      p.vertex(100,40);
-      p.vertex(100,100);
-      p.vertex(0,100);
-      p.vertex(0,0);
-      p.endShape(p.CLOSE);
+    const p5Instance = new p5((p: any) => {
+        // flag to avoid to many instances of p5
+        rendered.current = true;
+        let shapes : any = [];
+        let direction = 1;
+        const numberOfShapes = 150;
+        
+        p5.disableFriendlyErrors = true;
 
-      p.translate(-x, -y);
-    }
+        p.setup = () => {
+          p.createCanvas(width, height).parent(renderRef.current);
 
+          for(let i = 0; i < numberOfShapes; i++) {
+            shapes.push(
+                {
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: Math.max(25, Math.random() * width/3),
+                    color: colors[parseInt(Math.random() * colors.length)]
+                }
+            );
+          };
 
-    function drawShape(p: any, morph: p5.Vector[], x:number, y: number, scale: number): void {
-      // Draw a polygon that makes up all the vertices
-      p.beginShape();
-      p.scale(scale, scale);
-      //p.noFill();
-
-      morph.forEach(v => {
-        p.vertex(v.x + x, v.y + y);
-      });
-      p.endShape(p.CLOSE);
-    }
-
-    useEffect(() => {
-        if(rendered.current) {
-            return;
+          p.strokeWeight(0);
         }
 
-        const width = 500 //document.body.offsetWidth - 15;
-        const height = 500 //document.body.offsetHeight - 15;
+        p.draw = () => {
+          p.frameRate(20);
+          p.background(25, 25, 25);
+          //p.noLoop();
 
-        const duration = 2000;
-        const numberOfShape = 4;
+          const timeAnimation = p.millis() / (durationGrow);
 
-        let currentShapeIndex = 0;
+          p.clip(() => {
+            drawG(p, width/2 - letterSize, height/2 - 300 - 30 - letterSize, 1);
+            drawE(p, width/2 - letterSize, height/2 - 200 - 20 - letterSize, 1);
+            drawN(p, width/2 - letterSize, height/2 - 100 - 10 - letterSize, 1);
+            drawU(p, width/2 - letterSize, height/2 - letterSize, 1);
+            drawA(p, width/2 - letterSize, height/2 + 100 + 10 - letterSize, 1);
+            drawR(p, width/2 - letterSize, height/2 + 200 + 20 - letterSize, 1);
+            drawY(p, width/2 - letterSize, height/2 + 300 + 30 - letterSize, 1);
+          }, { invert: invert });
+          
+          shapes.forEach(({x, y, size, color}) => {
+            p.fill(color);
+            p.circle(x, y, size * (Math.cos(timeAnimation + Math.PI) +1));
+          });
 
-        new p5((p: any) => {
-            // flag to avoid to many instances of p5
-            rendered.current = true;
+        }
+    });
+    return () => { 
+      p5Instance.remove();
+      rendered.current = false;
+    };
+  }, [invert]);
 
-            p.setup = () => {
-              p.createCanvas(width, height).parent(renderRef.current);
-            }
-
-            p.draw = () => {
-              p.frameRate(30);
-              p.background(51,51,51);
-              //p.noLoop();
-
-              const time = p.millis() / (duration) % 1;
-
-              p.strokeWeight(4);
-              //p.noStroke();
-
-              p.fill(255);
-              p.clip(() => drawG(p, 100, 200, 2), { invert: true });
-
-              p.fill(240, 12, 67);
-              p.circle(width/2, height/2, 300);
-
-            }
-        })
-    }, []);
-
-    return(
-        <div ref={renderRef}></div>
-    )
+  return(
+    <div>
+      <div ref={renderRef}></div>
+      <div className="d-flex flex-row gap-2 align-center justify-content-center">
+        <fieldset className="fieldset border-base-300 rounded-box w-64 border p-4">
+          <legend className="fieldset-legend text-white">Options</legend>
+          <label className="label">
+            <input type="checkbox" checked={invert} onChange={()=> setInvert(!invert)} className="toggle" />
+            Invert
+          </label>
+        </fieldset>
+      </div>
+    </div>
+  )
 }
