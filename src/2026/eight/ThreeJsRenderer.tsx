@@ -39,11 +39,13 @@ function ThreejsRenderer({
         }}
       >
         <Suspense fallback={<FallBackLoader/>}>
-          <ambientLight intensity={0.5 * Math.PI} />
+          <ambientLight intensity={1.} />
+          <color attach="background" args={["#333333"]} />
+
           <Environment preset="night"/>
-          <fog attach="fog" color="purple" near={0} far={20 * 2.25} />
-          <Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
-          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />
+          <fog attach="fog" color="black" near={10} far={300} />
+          {/*<Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
+          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />*/}
 
           <group position={[0, -1.5, 0]}>
             <Float position={[0, 2.15, 0]} speed={2} rotationIntensity={2} floatIntensity={2}>
