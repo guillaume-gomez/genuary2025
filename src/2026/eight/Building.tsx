@@ -23,7 +23,7 @@ function Building({position = [0, 0, 0], width, height, depth } : BuildingProps 
     <mesh position={position}>
       <meshPhysicalMaterial
         color={[3, 3, 3]}
-        emissive="#101010"
+        emissive={[0.01, 0.01, 0.01]}
         roughness={0.8}
         metalness={0.8}
         ior={1.5}
