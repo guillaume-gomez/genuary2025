@@ -1,6 +1,10 @@
 import {
   Outlines,
 } from '@react-three/drei';
+import { ForwardRef } from "react";
+import { Group } from "three";
+import { animated } from '@react-spring/three'
+
 import Building from "./Building";
 
 interface BlockData {
@@ -8,16 +12,24 @@ interface BlockData {
   width: number;
   height: number;
   depth: number;
+  
 }
 
 interface BlocksProps {
   position: [number, number, number];
   blocksData: BlockData[];
+  visible: number;
+  //ref: ForwardRef<Group>
 }
 
-function Blocks({ position, blocksData }: BlocksProps) {
+function Blocks({ position, blocksData, visible = false }: BlocksProps) {
 	return (
-		<group position={position}>
+		<animated.group
+      position-x={position[0]}
+      position-y={position[1]}
+      position-z={position[2]}
+      visible={visible}
+    >
       {blocksData.map(({position, width, height, depth}) => 
         (
           <Building
@@ -38,7 +50,7 @@ function Blocks({ position, blocksData }: BlocksProps) {
         <meshStandardMaterial color={[255/255 * 4, 255/255 * 4, 255/255 * 4]} wireframe={true} />
         <planeGeometry args={[20, 20, 20, 20]} />
       </mesh>
-		</group>
+		</animated.group>
 	)
 }
 
