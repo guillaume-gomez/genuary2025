@@ -1,6 +1,7 @@
-import { useRef, Suspense } from 'react';
+import { useRef, Suspense, useEffect, useState } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
+import { useTrail,useSprings } from '@react-spring/three'
 import {
   Float,
   ContactShadows,
@@ -10,42 +11,70 @@ import {
   Stats,
   Environment,
   Outlines,
-  Fog,
+  Stage,
 } from '@react-three/drei';
 import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
 import FallBackLoader from "../../2025/first/FallBackLoader";
 import Striplight from "./Striplight";
-import Building from "./Building";
+import Blocks from "./Blocks";
 
 
 interface ThreeJsRendererProps {
 }
 
+
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const cameraRef = useRef(null);
+  const currentFocusBlock = useRef(null);
+
   const {
     toggleFullscreen,
   } = useFullscreen({ target: canvasContainerRef });
 
+  const [trails, api] = useSprings(
+    49,
+    (springIndex: number) => {
+      const offset = (7 * 20) /2;
+      const xPos = (springIndex % 7) * 20;
+      const yPos = (Math.floor(springIndex / 7)) * 20;
+
+      return (
+        {
+          from: { scale: 0, x: (-offset + xPos), z: (-offset + yPos) },
+          to: { scale: 1, x:  -offset + xPos, z:  -offset + yPos },
+          config: {
+            duration: 1000
+          },
+          delay: springIndex * 1100,
+        }
+      );
+    },
+    []
+  );
+
   return (
     <div ref={canvasContainerRef} className="w-full h-full h-screen">
       <Canvas
-        camera={{ position: [0,0.75, 15], fov: 75, far: 50 }}
+        camera={{ position: [0,200, 400], fov: 75, far: 500 }}
         dpr={window.devicePixelRatio}
         shadows
         onDoubleClick={() => {
           toggleFullscreen();
         }}
       >
+        <fogExp2 attach="fog" color="pink" density={0.01} />
         <Suspense fallback={<FallBackLoader/>}>
-          <ambientLight intensity={1.} />
-          <color attach="background" args={["#333333"]} />
-
-          <Environment preset="night"/>
-          <fog attach="fog" color="black" near={10} far={300} />
-          {/*<Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
-          <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />*/}
+          <color attach="background" args={["#404040"]} />
+          <ambientLight intensity={1.5} />
+          <hemisphereLight args={[ 0xffffbb, 0xFF0000, 1 ]} />
+          
+          {/*
+            <Striplight position={[10, 2, 0]} scale={[1, 3, 10]} />
+            <Striplight position={[-10, 2, 0]} scale={[1, 3, 10]} />
+          */}
+        
 
           <group position={[0, -1.5, 0]}>
             <Float position={[0, 2.15, 0]} speed={2} rotationIntensity={2} floatIntensity={2}>
@@ -57,46 +86,39 @@ function ThreejsRenderer({
             <ContactShadows scale={10} blur={3} opacity={0.25} far={10} />
           </group>
 
-          <mesh castShadow receiveShadow position={[0, 0, 0]}>
-            <meshStandardMaterial color={[43/255 * 1, 26/255 * 1, 56/255 * 1]} wireframe={false} />
-            <boxGeometry args={[20, 0.5, 20, 20, 1, 20]} />
-            <Outlines thickness={5} color="hotpink" />
-          </mesh>
-
-          <mesh castShadow receiveShadow position={[0, 0.3, 0]} rotation={[Math.PI/2, 0, 0]}>
-            <meshStandardMaterial color={[255/255 * 4, 255/255 * 4, 255/255 * 4]} wireframe={true} />
-            <planeGeometry args={[20, 20, 20, 20]} />
-          </mesh>
-
-          <Building
-            position={[5, 5, 5]}
-            width={4}
-            height={10}
-            depth={4}
-          />
-
-          {/*<mesh>
-            <boxGeometry />
-            <meshBasicMaterial  color={[1, 2, 0]} />
-            <Outlines thickness={2} color="hotpink" />
-          </mesh>*/}
-
+          {
+            trails.map( (props) => {
+              return (
+                <Blocks
+                  scale={props.scale}
+                  //ref={indexX + 7 * indexZ === currentFocusIndex.current ? currentFocusBlock : null}
+                  position={[props.x, 0, props.z]}
+                  blocksData={
+                    [
+                      { position: [2, 5, 5], width:8, height: 10, depth: 4 }
+                    ]
+                  }
+                />
+              )
+            }
+          )}
+ 
           <EffectComposer>
             <Bloom mipmapBlur luminanceThreshold={1} />
           </EffectComposer>
 
         </Suspense>
-         { import.meta.env.MODE === "development" && (<>
+        
+        { import.meta.env.MODE === "development" && (<>
           <Stats/>
           <GizmoHelper alignment="bottom-right" margin={[100, 100]}>
             <GizmoViewport labelColor="white" axisHeadScale={1} />
           </GizmoHelper>
           </>)
-
         }
         <OrbitControls
           makeDefault
-          maxDistance={20}
+          maxDistance={50}
           //autoRotate={true}
           autoRotateSpeed={0.25}
           enableZoom={true}
