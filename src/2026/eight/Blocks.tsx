@@ -1,9 +1,8 @@
 import {
   Outlines
 } from '@react-three/drei';
-import { ForwardRef } from "react";
-import { Group } from "three";
-import { animated } from '@react-spring/three';
+import { animated, SpringValue } from '@react-spring/three';
+
 
 import Building from "./Building";
 
@@ -16,10 +15,9 @@ interface BlockData {
 }
 
 interface BlocksProps {
-  position: [number, number, number];
+  position: [SpringValue<number>, number, SpringValue<number>];
   blocksData: BlockData[];
-  scale: number;
-  //ref: ForwardRef<Group>
+  scale: SpringValue<number>;
 }
 
 function Blocks({ position, blocksData, scale }: BlocksProps) {
@@ -31,10 +29,12 @@ function Blocks({ position, blocksData, scale }: BlocksProps) {
       scale-x={scale}
       scale-y={scale}
       scale-z={scale}
+      key={position.toString()}
     >
       {blocksData.map(({position, width, height, depth}) => 
         (
           <Building
+            key={`${position.toString()}_${width}_${height}_${depth}`}
             position={position}
             width={width}
             height={height}

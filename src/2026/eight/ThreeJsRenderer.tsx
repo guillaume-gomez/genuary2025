@@ -1,20 +1,16 @@
-import { useRef, Suspense, useEffect, useState } from 'react';
+import { useRef, Suspense } from 'react';
 import { useFullscreen } from "rooks";
 import { Canvas } from '@react-three/fiber';
-import { useTrail,useSprings } from '@react-spring/three'
+import { useSprings } from '@react-spring/three'
 import {
   Float,
   ContactShadows,
-  OrbitControls,
   GizmoHelper,
   GizmoViewport,
   Stats,
-  Environment,
-  Outlines,
-  Stage,
   CameraControls
 } from '@react-three/drei';
-import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import FallBackLoader from "../../2025/first/FallBackLoader";
 import Striplight from "./Striplight";
 import Blocks from "./Blocks";
@@ -36,7 +32,7 @@ function ThreejsRenderer({
     toggleFullscreen,
   } = useFullscreen({ target: canvasContainerRef });
 
-  const [trails, api] = useSprings(
+  const [trails, _api] = useSprings(
     numberOfBlocks,
     (springIndex: number) => {
 
@@ -146,8 +142,6 @@ function ThreejsRenderer({
           ref={cameraRef}
           makeDefault
           maxDistance={50}
-          enableZoom={true}
-          enablePan={false}
         />
       </Canvas>
     </div>
