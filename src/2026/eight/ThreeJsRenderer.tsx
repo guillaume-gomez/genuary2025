@@ -12,6 +12,7 @@ import {
   Environment,
   Outlines,
   Stage,
+  CameraControls
 } from '@react-three/drei';
 import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
 import FallBackLoader from "../../2025/first/FallBackLoader";
@@ -22,32 +23,54 @@ import Blocks from "./Blocks";
 interface ThreeJsRendererProps {
 }
 
+const numberOfBlocks = 49;
+const row = 7;
 
 function ThreejsRenderer({
 } : ThreeJsRendererProps ): React.ReactElement {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const cameraRef = useRef(null);
-  const currentFocusBlock = useRef(null);
+  const groupRef = useRef(null);
 
   const {
     toggleFullscreen,
   } = useFullscreen({ target: canvasContainerRef });
 
   const [trails, api] = useSprings(
-    49,
+    numberOfBlocks,
     (springIndex: number) => {
-      const offset = (7 * 20) /2;
-      const xPos = (springIndex % 7) * 20;
-      const yPos = (Math.floor(springIndex / 7)) * 20;
+
+      const zIndex = Math.floor(springIndex / row);
+
+      const xIndex = zIndex % 2 === 0 ?
+        (springIndex % row) : 
+        (row - 1) - (springIndex % row)
+      ;
 
       return (
         {
-          from: { scale: 0, x: (-offset + xPos), z: (-offset + yPos) },
-          to: { scale: 1, x:  -offset + xPos, z:  -offset + yPos },
+          from: { scale: 0, x: xIndex * 20, z: zIndex * 20 },
+          to: { scale: 1 },
           config: {
-            duration: 1000
+            duration: 200
           },
-          delay: springIndex * 1100,
+          delay: springIndex * 300,
+
+          onStart: async () => {
+            if(groupRef.current && cameraRef.current) {
+              const { position } = groupRef.current.children[springIndex]
+              await cameraRef.current.moveTo(position.x - 20, position.y + 10, position.z, true);
+              cameraRef.current.setTarget(...position, true);
+            }
+          },
+
+          onRest: async () => {
+            if(springIndex === (numberOfBlocks - 1) && cameraRef.current) {
+              await cameraRef.current.setTarget(-row/2, 0, 0, false);
+              cameraRef.current.setPosition(-row/2, 20, 0, true);
+              
+            }
+          }
         }
       );
     },
@@ -57,7 +80,7 @@ function ThreejsRenderer({
   return (
     <div ref={canvasContainerRef} className="w-full h-full h-screen">
       <Canvas
-        camera={{ position: [0,200, 400], fov: 75, far: 500 }}
+        camera={{ position: [20,10, 40], fov: 75, far: 500 }}
         dpr={window.devicePixelRatio}
         shadows
         onDoubleClick={() => {
@@ -86,10 +109,12 @@ function ThreejsRenderer({
             <ContactShadows scale={10} blur={3} opacity={0.25} far={10} />
           </group>
 
+          <group ref={groupRef}>
           {
-            trails.map( (props) => {
+            trails.map( (props, index) => {
               return (
                 <Blocks
+                  key={index}
                   scale={props.scale}
                   //ref={indexX + 7 * indexZ === currentFocusIndex.current ? currentFocusBlock : null}
                   position={[props.x, 0, props.z]}
@@ -102,6 +127,7 @@ function ThreejsRenderer({
               )
             }
           )}
+          </group>
  
           <EffectComposer>
             <Bloom mipmapBlur luminanceThreshold={1} />
@@ -116,13 +142,11 @@ function ThreejsRenderer({
           </GizmoHelper>
           </>)
         }
-        <OrbitControls
+        <CameraControls
+          ref={cameraRef}
           makeDefault
           maxDistance={50}
-          //autoRotate={true}
-          autoRotateSpeed={0.25}
           enableZoom={true}
-          enableRotate={true}
           enablePan={false}
         />
       </Canvas>
