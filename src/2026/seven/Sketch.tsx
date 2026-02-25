@@ -8,7 +8,9 @@ interface Shape {
   visited: boolean;
   operator: string;
   color: string;
+  value: boolean;
 }
+
 
 const colors = [
   "#392759",
@@ -27,6 +29,19 @@ const operators = [
   // "B",
   // "C"
 ];
+
+// TODO FAIRE DES OPERATIONS SUR LES COLORS
+function andOperation(a: boolean, b: boolean): boolean {
+  return a && b;
+}
+
+function orOperation(a: boolean, b: boolean): boolean {
+  return a || b;
+}
+
+function xorOperation(a: boolean, b: boolean): boolean {
+  return a != b;
+}
 
 function fromXYToIndex(x: number, y: number, widthGrid: number): number {
   return x + (y * widthGrid);
@@ -68,11 +83,20 @@ function neighbours(x: number, y: number, widthGrid: number, heightGrid: number)
   return candidates.map(([x, y]) => fromXYToIndex(x, y, widthGrid));
 }
 
-function computeOperation(shape: Shape, neighbour: Shape): string {
-  return ".";
+function computeOperation(shapeA: Shape, shapeB: Shape): value {
+  switch(shapeA.operator) {
+  case ".":
+    return andOperation(shapeA.value, shapeB.value);
+  case "|":
+    return orOperation(shapeA.value, shapeB.value);
+  case "-":
+  default
+    return xorOperation(shapeA.value, shapeB.value);
+  }
 }
 
-function computeColor(shapes: Shape[], shape: Shape, neighboursIndexed: number[]): string {
+function computeColor(shape: Shape, neighbours: Shape[]): string {
+  neighbourValue = 
   return "#00FFAA";
 }
 
@@ -102,7 +126,7 @@ export default function P5Sketch() {
 
     const width = 600 //document.body.offsetWidth - 15;
     const height = 600 //document.body.offsetHeight - 15;
-    const cellSize = 50;
+    const cellSize = 20;
 
     const widthGrid = width / cellSize;
     const heightGrid = height / cellSize;
@@ -136,6 +160,7 @@ export default function P5Sketch() {
                 operator: operators[ Math.floor(Math.random() * operators.length) ],
                 color: "#F900DD",
                 visited: false,
+                value: Math.random() >= 0.5
               })
             }
           }
