@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { compact, uniq } from "lodash";
 import p5 from "p5";
 
 interface Shape {
@@ -31,62 +32,40 @@ function fromXYToIndex(x: number, y: number, widthGrid: number): number {
   return x + (y * widthGrid);
 }
 
-function left(x: number): number | null {
-  if(x === 0) {
+function left(x: number, y: number): [number, number] | null {
+  if(x - 1 < 0) {
     return null;
   }
 
-  return x - 1;
+  return [x - 1, y];
 }
 
-function right(x: number, widthGrid: number): number | null {
-  if( (x+1) === widthGrid) {
+function right(x: number, y: number,  widthGrid: number): [number, number] | null {
+  if( (x+1) >= widthGrid) {
     return null;
   }
 
-  return x + 1;
+  return [x + 1, y];
 }
 
-function up(y: number): number | null {
-  if(y === 0) {
+function up(x: number, y: number): [number, number] | null {
+  if(y - 1 < 0) {
     return null;
   }
 
-  return y - 1;
+  return [x, y - 1];
 }
 
-function down(y: number, heightGrid: number): number | null {
-  if( (y+1) === heightGrid) {
+function down(x: number, y: number, heightGrid: number): [number, number] | null {
+  if( (y+1) >= heightGrid) {
     return null;
   }
-
-  return y + 1;
+  return [x, y + 1];
 }
 
 function neighbours(x: number, y: number, widthGrid: number, heightGrid: number): number[] {
-  let candidateIndexes : number[] = [];
-
-  const leftCandidate = left(x);
-  if(leftCandidate) {
-    candidateIndexes.push(fromXYToIndex(leftCandidate, y, widthGrid));
-  }
-
-  const rightCandidate = right(x, widthGrid);
-  if(rightCandidate) {
-    candidateIndexes.push(fromXYToIndex(rightCandidate, y, widthGrid));
-  }
-
-  const upCandidate = up(y);
-  if(upCandidate) {
-    candidateIndexes.push(fromXYToIndex(x, upCandidate, widthGrid));
-  }
-
-  const downCandidate = down(y, heightGrid);
-  if(downCandidate) {
-    candidateIndexes.push(fromXYToIndex(x, downCandidate, widthGrid));
-  }
-
-  return candidateIndexes;
+  const candidates = compact([left(x, y), right(x,y, widthGrid), up(x,y), down(x, y, heightGrid) ]);
+  return candidates.map(([x, y]) => fromXYToIndex(x, y, widthGrid));
 }
 
 function computeOperation(shape: Shape, neighbour: Shape): string {
@@ -101,9 +80,7 @@ function computeColor(shapes: Shape[], shape: Shape, neighboursIndexed: number[]
 function visit(visitedIndexes: number[], shapes: Shape[], widthGrid: number, heightGrid: number): number[] {
   let newVisitedIndexes = [];
   visitedIndexes.forEach(visitIndex => {
-    console.log(visitIndex)
     const shape = shapes[visitIndex];
-
     const neighboursIndexed = neighbours(shape.x, shape.y, widthGrid, heightGrid);
     shapes[visitIndex] = { ...shape, visited: true, color: "#FF0055" };
 
@@ -111,7 +88,7 @@ function visit(visitedIndexes: number[], shapes: Shape[], widthGrid: number, hei
     const neighboursIndexedNoVisited = neighboursIndexed.filter(index => !shapes[index]?.visited);
     newVisitedIndexes.push(...neighboursIndexedNoVisited);
   });
-  return newVisitedIndexes;
+  return uniq(newVisitedIndexes);
 }
 
 export default function P5Sketch() {
@@ -123,8 +100,8 @@ export default function P5Sketch() {
         return;
     }
 
-    const width = 500 //document.body.offsetWidth - 15;
-    const height = 500 //document.body.offsetHeight - 15;
+    const width = 600 //document.body.offsetWidth - 15;
+    const height = 600 //document.body.offsetHeight - 15;
     const cellSize = 50;
 
     const widthGrid = width / cellSize;
@@ -151,8 +128,8 @@ export default function P5Sketch() {
 
           p.textAlign(p.CENTER, p.CENTER);
 
-          for(let x = 0; x < widthGrid; x++) {
-            for(let y = 0; y < heightGrid; y++) {
+          for(let y = 0; y < heightGrid; y++) {
+            for(let x = 0; x < widthGrid; x++) {
               shapes.push({
                 x,
                 y,
@@ -162,14 +139,16 @@ export default function P5Sketch() {
               })
             }
           }
-
-          visitedIndexes = [ shapes.length/2 ];
+          visitedIndexes = [ fromXYToIndex(widthGrid/2, heightGrid/2, widthGrid) ];
 
         }
 
         p.draw = () => {
           p.frameRate(10);
           p.background(50, 50, 50);
+          if(visitedIndexes.length === 0) {
+            p.noLoop();
+          }
           //p.noLoop();
 
           p.strokeWeight(2);
@@ -189,9 +168,7 @@ export default function P5Sketch() {
 
           if((p.millis()/ 2000) % 1) {
             visitedIndexes = visit(visitedIndexes, shapes, widthGrid, heightGrid);
-            if(visitedIndexes.length === 0) {
-              p.noLoop();
-            }
+            console.log(visitedIndexes.map(index => shapes[index]))
           }
 
         }
