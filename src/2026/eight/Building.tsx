@@ -27,7 +27,7 @@ function Building({position = [0, 0, 0], width, height, depth } : BuildingProps 
         metalness={0.8}
         ior={1.5}
         reflectivity={0.1}
-        map={texture} 
+        map={texture}
       />
       <boxGeometry args={[width, height, depth]} />
       <Outlines
