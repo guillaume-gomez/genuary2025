@@ -8,7 +8,6 @@ interface Shape {
   visited: boolean;
   operator: string;
   color: string;
-  value: boolean;
 }
 
 
@@ -30,17 +29,24 @@ const operators = [
   // "C"
 ];
 
-// TODO FAIRE DES OPERATIONS SUR LES COLORS
-function andOperation(a: boolean, b: boolean): boolean {
-  return a && b;
+function fromColorToHex(color): number {
+  return parseInt(
+    color.replace('#', '0x'),
+    16
+  );
+} 
+
+
+function andOperation(a: number, b: number): number {
+  return a & b;
 }
 
-function orOperation(a: boolean, b: boolean): boolean {
-  return a || b;
+function orOperation(a: number, b: number): number {
+  return a | b;
 }
 
-function xorOperation(a: boolean, b: boolean): boolean {
-  return a != b;
+function xorOperation(a: number, b: number): number {
+  return a ^ b;
 }
 
 function fromXYToIndex(x: number, y: number, widthGrid: number): number {
@@ -86,20 +92,29 @@ function neighbours(x: number, y: number, widthGrid: number, heightGrid: number)
 function computeOperation(shapeA: Shape, shapeB: Shape): value {
   switch(shapeA.operator) {
   case ".":
-    return andOperation(shapeA.value, shapeB.value);
+    return andOperation(
+      fromColorToHex(shapeA.color),
+      fromColorToHex(shapeB.color)
+    );
   case "|":
-    return orOperation(shapeA.value, shapeB.value);
+    return orOperation(
+      fromColorToHex(shapeA.color),
+      fromColorToHex(shapeB.color)
+    );
   case "-":
   default
-    return xorOperation(shapeA.value, shapeB.value);
+    return xorOperation(
+      fromColorToHex(shapeA.color),
+      fromColorToHex(shapeB.color)
+    );
   }
 }
 
 function computeColor(shape: Shape, neighbours: Shape[]): string {
-  neighbourValue = 
-  return "#00FFAA";
+  const neighbourValue = neighbours.reduce((acc, currentValue) => computeOperation(acc, currentValue) , 0x000000)
+  const finalColorHex = computeOperation(shape, neighbourValue);
+  return "#" + finalColorHex.toString(16);
 }
-
 
 function visit(visitedIndexes: number[], shapes: Shape[], widthGrid: number, heightGrid: number): number[] {
   let newVisitedIndexes = [];
