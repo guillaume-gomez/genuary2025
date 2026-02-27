@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { compact, uniq } from "lodash";
+import { compact, uniq, sample } from "lodash";
 import p5 from "p5";
 
 interface Shape {
@@ -12,11 +12,17 @@ interface Shape {
 
 
 const colors = [
-  "#392759",
-  "#6874E8",
-  "#E8F0FF",
-  "#F7ACCF",
-  "#7A5C61"
+  "#084C61",
+  "#DB504A",
+  "#E3B505",
+  "#4F6D7A",
+  "#56A3A6",
+
+  "#8D6A9F",
+  "#C5CBD3",
+  "#8CBCB9",
+  "#DDA448",
+  "#BB342F"
 ];
 
 const operators = [
@@ -29,12 +35,16 @@ const operators = [
   // "C"
 ];
 
-function fromColorToHex(color): number {
+function fromColorToHex(color: string): number {
   return parseInt(
     color.replace('#', '0x'),
     16
   );
-} 
+}
+
+function fromHexNumberToString(color: number): string {
+  return "#" + color.toString(16);
+}
 
 
 function andOperation(a: number, b: number): number {
@@ -84,47 +94,59 @@ function down(x: number, y: number, heightGrid: number): [number, number] | null
   return [x, y + 1];
 }
 
-function neighbours(x: number, y: number, widthGrid: number, heightGrid: number): number[] {
+function neighboursIndexes(x: number, y: number, widthGrid: number, heightGrid: number): number[] {
   const candidates = compact([left(x, y), right(x,y, widthGrid), up(x,y), down(x, y, heightGrid) ]);
   return candidates.map(([x, y]) => fromXYToIndex(x, y, widthGrid));
 }
 
-function computeOperation(shapeA: Shape, shapeB: Shape): value {
-  switch(shapeA.operator) {
-  case ".":
-    return andOperation(
-      fromColorToHex(shapeA.color),
-      fromColorToHex(shapeB.color)
-    );
-  case "|":
-    return orOperation(
-      fromColorToHex(shapeA.color),
-      fromColorToHex(shapeB.color)
-    );
-  case "-":
-  default
-    return xorOperation(
-      fromColorToHex(shapeA.color),
-      fromColorToHex(shapeB.color)
-    );
+function computeOperation(operator: string, shapeAColor: number, shapeBColor: number): string {
+  switch(operator) {
+    case ".": {
+      return andOperation(
+        shapeAColor,
+        shapeBColor
+      );
+    }
+    case "|": {
+      return orOperation(
+        shapeAColor,
+        shapeBColor
+      );
+    }
+    case "-":
+    default: {
+      return xorOperation(
+        shapeAColor,
+        shapeBColor
+      );
+    }
   }
 }
 
 function computeColor(shape: Shape, neighbours: Shape[]): string {
-  const neighbourValue = neighbours.reduce((acc, currentValue) => computeOperation(acc, currentValue) , 0x000000)
-  const finalColorHex = computeOperation(shape, neighbourValue);
-  return "#" + finalColorHex.toString(16);
+  const neighbourValue = neighbours.reduce((acc, currentValue) => computeOperation(currentValue.operator, fromColorToHex(currentValue.color), acc) , 0xFFFFFF)
+  const finalColorHex = computeOperation(shape.operator, fromColorToHex(shape.color), neighbourValue);
+  return fromHexNumberToString(finalColorHex);
+
+  const randomNeighbour = sample(neighbours);
+  return fromHexNumberToString(computeOperation(shape.operator, fromColorToHex(shape.color), fromColorToHex(randomNeighbour.color)))
 }
 
 function visit(visitedIndexes: number[], shapes: Shape[], widthGrid: number, heightGrid: number): number[] {
   let newVisitedIndexes = [];
   visitedIndexes.forEach(visitIndex => {
     const shape = shapes[visitIndex];
-    const neighboursIndexed = neighbours(shape.x, shape.y, widthGrid, heightGrid);
-    shapes[visitIndex] = { ...shape, visited: true, color: "#FF0055" };
+    
+    const neighboursIndexes_ = neighboursIndexes(shape.x, shape.y, widthGrid, heightGrid);
+    const neighbours = neighboursIndexes_.map(index => shapes[index]);
 
+    shapes[visitIndex] = { 
+      ...shape,
+      visited: true,
+      color: computeColor(shape, neighbours)
+    };
 
-    const neighboursIndexedNoVisited = neighboursIndexed.filter(index => !shapes[index]?.visited);
+    const neighboursIndexedNoVisited = neighboursIndexes_.filter(index => !shapes[index]?.visited);
     newVisitedIndexes.push(...neighboursIndexedNoVisited);
   });
   return uniq(newVisitedIndexes);
@@ -150,12 +172,15 @@ export default function P5Sketch() {
     let shapes : Shape[] = [];
     let visitedIndexes : number[] = [];
 
-    function drawCell(p: any, x: number, y: number, size: number, operator: string, color: string) {
-      p.fill(color);
-      p.square(x, y, size, 5);
-      p.textSize(22);
-      p.fill(0, 0, 0);
-      p.text(operator, x + 11, y + 11);
+    function drawCell(p: any, shape: Shape, size: number) {
+      p.fill(shape.color);
+      p.square(shape.x * size, shape.y * size, size, 5);
+      
+      if(!shape.visited) {
+        p.textSize(22);
+        p.fill(0, 0, 0);
+        p.text(shape.operator, (shape.x * cellSize) + 11, (shape.y * cellSize) + 11);
+      }
     }
 
     const p5Instance = new p5((p: any) => {
@@ -173,9 +198,8 @@ export default function P5Sketch() {
                 x,
                 y,
                 operator: operators[ Math.floor(Math.random() * operators.length) ],
-                color: "#F900DD",
+                color: colors[ Math.floor(Math.random() * colors.length)],
                 visited: false,
-                value: Math.random() >= 0.5
               })
             }
           }
@@ -187,28 +211,30 @@ export default function P5Sketch() {
           p.frameRate(10);
           p.background(50, 50, 50);
           if(visitedIndexes.length === 0) {
+            // restart the animation
+            // for(let index = 0; index < shapes.length; index++) {
+            //   shapes[index] = { ...shapes[index], visited: false }; 
+            // }
+            // visitedIndexes = [ fromXYToIndex(widthGrid/2, heightGrid/2, widthGrid) ];
+
             p.noLoop();
           }
-          //p.noLoop();
+          
 
           p.strokeWeight(2);
           const time = p.millis() / durationGrow;
           const size = p.lerp(0, cellSize, Math.sin(time));
 
-          shapes.forEach( ({x, y, operator, color}) => {
+          shapes.forEach(shape => {
             drawCell(
               p,
-              x * cellSize,
-              y * cellSize,
+              shape,
               cellSize,
-              operator,
-              color
             );
           });
 
           if((p.millis()/ 2000) % 1) {
             visitedIndexes = visit(visitedIndexes, shapes, widthGrid, heightGrid);
-            console.log(visitedIndexes.map(index => shapes[index]))
           }
 
         }
