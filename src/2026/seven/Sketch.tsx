@@ -8,6 +8,7 @@ interface Shape {
   visited: boolean;
   operator: string;
   color: string;
+  textColor: string;
 }
 
 
@@ -124,12 +125,12 @@ function computeOperation(operator: string, shapeAColor: number, shapeBColor: nu
 }
 
 function computeColor(shape: Shape, neighbours: Shape[]): string {
-  const neighbourValue = neighbours.reduce((acc, currentValue) => computeOperation(currentValue.operator, fromColorToHex(currentValue.color), acc) , 0xFFFFFF)
-  const finalColorHex = computeOperation(shape.operator, fromColorToHex(shape.color), neighbourValue);
+  const neighbourValue = neighbours.reduce((acc, currentValue) => computeOperation(currentValue.operator, fromColorToHex(currentValue.textColor), acc) , 0xFFFFFF)
+  const finalColorHex = computeOperation(shape.operator, fromColorToHex(shape.textColor), neighbourValue);
   return fromHexNumberToString(finalColorHex);
 
   const randomNeighbour = sample(neighbours);
-  return fromHexNumberToString(computeOperation(shape.operator, fromColorToHex(shape.color), fromColorToHex(randomNeighbour.color)))
+  return fromHexNumberToString(computeOperation(shape.operator, fromColorToHex(shape.textColor), fromColorToHex(randomNeighbour.textColor)))
 }
 
 function visit(visitedIndexes: number[], shapes: Shape[], widthGrid: number, heightGrid: number): number[] {
@@ -143,7 +144,8 @@ function visit(visitedIndexes: number[], shapes: Shape[], widthGrid: number, hei
     shapes[visitIndex] = { 
       ...shape,
       visited: true,
-      color: computeColor(shape, neighbours)
+      textColor: computeColor(shape, neighbours),
+      operator: operators[ Math.floor( Math.random() * operators.length ) ]
     };
 
     const neighboursIndexedNoVisited = neighboursIndexes_.filter(index => !shapes[index]?.visited);
@@ -161,26 +163,23 @@ export default function P5Sketch() {
         return;
     }
 
-    const width = 600 //document.body.offsetWidth - 15;
-    const height = 600 //document.body.offsetHeight - 15;
-    const cellSize = 20;
+    const width = 800 //document.body.offsetWidth - 15;
+    const height = 800 //document.body.offsetHeight - 15;
+    const cellSize = 50;
 
     const widthGrid = width / cellSize;
     const heightGrid = height / cellSize;
-    const durationGrow = 1000;
-
+  
     let shapes : Shape[] = [];
     let visitedIndexes : number[] = [];
 
     function drawCell(p: any, shape: Shape, size: number) {
       p.fill(shape.color);
-      p.square(shape.x * size, shape.y * size, size, 5);
+      p.square(shape.x * size, shape.y * size, size, 4);
       
-      if(!shape.visited) {
-        p.textSize(22);
-        p.fill(0, 0, 0);
-        p.text(shape.operator, (shape.x * cellSize) + 11, (shape.y * cellSize) + 11);
-      }
+      p.textSize(30);
+      p.fill(shape.textColor);
+      p.text(shape.operator, (shape.x * cellSize) + 25, (shape.y * cellSize) + 25);
     }
 
     const p5Instance = new p5((p: any) => {
@@ -199,6 +198,7 @@ export default function P5Sketch() {
                 y,
                 operator: operators[ Math.floor(Math.random() * operators.length) ],
                 color: colors[ Math.floor(Math.random() * colors.length)],
+                textColor: colors[ Math.floor(Math.random() * colors.length)],
                 visited: false,
               })
             }
@@ -208,35 +208,31 @@ export default function P5Sketch() {
         }
 
         p.draw = () => {
-          p.frameRate(10);
+          p.frameRate(15);
           p.background(50, 50, 50);
           if(visitedIndexes.length === 0) {
             // restart the animation
-            // for(let index = 0; index < shapes.length; index++) {
-            //   shapes[index] = { ...shapes[index], visited: false }; 
-            // }
-            // visitedIndexes = [ fromXYToIndex(widthGrid/2, heightGrid/2, widthGrid) ];
+            for(let index = 0; index < shapes.length; index++) {
+              shapes[index] = { ...shapes[index], visited: false }; 
+            }
+            visitedIndexes = [ fromXYToIndex(widthGrid/2, heightGrid/2, widthGrid) ];
 
-            p.noLoop();
+            //p.noLoop();
           }
           
 
           p.strokeWeight(2);
-          const time = p.millis() / durationGrow;
-          const size = p.lerp(0, cellSize, Math.sin(time));
-
+          
           shapes.forEach(shape => {
             drawCell(
               p,
               shape,
-              cellSize,
+              cellSize ,
             );
           });
 
-          if((p.millis()/ 2000) % 1) {
-            visitedIndexes = visit(visitedIndexes, shapes, widthGrid, heightGrid);
-          }
-
+          visitedIndexes = visit(visitedIndexes, shapes, widthGrid, heightGrid);
+          
         }
     });
     return () => {
