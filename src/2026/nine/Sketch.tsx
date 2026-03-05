@@ -36,6 +36,7 @@ const operators = [
   // "C"
 ];
 
+
 export default function P5Sketch() {
   const renderRef = useRef<HTMLDivElement>(null);
   const rendered = useRef(false);
@@ -53,6 +54,53 @@ export default function P5Sketch() {
     const heightGrid = height / cellSize;
 
     let shapes : Shape[] = [];
+
+    function compute(shapes: Shapes[]) {
+      shapes.forEach(shape => {
+        const neightbours = neightbours(shape);
+      });
+    }
+
+    function neightbours(shape: Shape): Shape[] {
+      return compact([
+        topLeft(shape),    top(shape),    topRight(shape),
+        left(shape),                      right(shape),
+        bottomLeft(shape), bottom(shape), bottomRight(shape)
+      ]);
+    }
+
+    function topLeft(shape: Shape) {
+
+    }
+
+    function top(shape: Shape) {
+
+    }
+
+    function topRight(shape: Shape) {
+
+    }
+
+    function left(shape: Shape) {
+
+    }
+
+    function right(shape: Shape) {
+
+    }
+
+    function bottomLeft(shape: Shape) {
+
+    }
+
+    function bottom(shape: Shape) {
+
+    }
+
+    function bottomRight(shape: Shape) {
+
+    }
+
 
     function drawCell(p: any, shape: Shape, size: number) {
       p.fill(shape.color);
