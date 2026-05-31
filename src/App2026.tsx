@@ -4,7 +4,8 @@ import LayoutContainer from "./LayoutContainer";
 //import Sketch from "./2026/three/Sketch";
 //import Sketch from "./2026/five/Sketch";
 //import Sketch from "./2026/eight/ThreeJsRenderer";
-import Sketch from "./2026/nine/Sketch";
+//import Sketch from "./2026/nine/Sketch";
+import Sketch from "./2026/world-cup/Sketch";
 
 function App2026() {
   return (

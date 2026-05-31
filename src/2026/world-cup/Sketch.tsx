@@ -1,6 +1,14 @@
 import { useEffect, useRef } from 'react';
 import p5 from "p5";
 
+const { BASE_URL } = import.meta.env;
+
+interface LetterData {
+  symbol: string;
+  size: number;
+  color: string;
+}
+
 const palette = [
   "#751312",
   "#6200eb",
@@ -22,6 +30,8 @@ const palette = [
   "#FFFFFF"
 ];
 
+const text = "guillaume"
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
@@ -34,16 +44,18 @@ export default function P5Sketch() {
         const width = 500 //document.body.offsetWidth - 15;
         const height = 500 //document.body.offsetHeight - 15;
 
-        const duration = 2000;
-        const numberOfShape = 4;
+        const duration = 25000;
+        const numberOfShape = palette.length;
 
         let currentShapeIndex = 0;
         let font = null;
+        let letters: LetterData[] = [];
 
-        function writeSymbol(symbol: string | number, x: number, y: number, size: number) {
+        function writeSymbol(p: any, letter: LetterData, x: number, y: number, duration: number) {
           p.push();
-          p.textSize(size);
-          p.text(symbol, x, y)
+          p.textSize(letter.size * duration);
+          p.fill(letter.color);
+          p.text(letter.symbol, x - letter.size/2, y);
           p.pop();
         }
 
@@ -53,20 +65,26 @@ export default function P5Sketch() {
             rendered.current = true;
 
             p.preload = () => {
-              //font = p.loadFont("fifa-26/fifa-26.otf");
+              font = p.loadFont(`${BASE_URL}/fifa-26/fifa-26.otf`);
             }
 
             p.setup = () => {
               p.createCanvas(width, height).parent(renderRef.current);
-              //p.textFont(font);
+              p.textFont(font);
               p.textSize(32);
               p.textAlign(p.CENTER, p.CENTER);
               p.strokeWeight(4);
-              
+
+              letters = palette.map((color, index) => {
+                return {
+                  color, 
+                  symbol: "A", //text.toString()[index], 
+                  size: (palette.length - index) * 50
+                };
+              })
             }
 
             p.draw = () => {
-              const letters = "Alice d'amour";
               p.frameRate(30);
               p.background(51,51,51);
               //p.noLoop();
@@ -74,7 +92,7 @@ export default function P5Sketch() {
               const time = p.millis() / (duration) % 1;
               // Look at each vertex
               letters.forEach((letter, index) => {
-                writeSymbol(letter, index * 50, 200, time * 32 );
+                writeSymbol(p, letter, width/2, height/2, time + 1.);
               });
             }
         })
