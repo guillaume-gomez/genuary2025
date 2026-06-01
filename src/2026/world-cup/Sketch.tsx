@@ -9,6 +9,12 @@ interface LetterData {
   color: string;
 }
 
+interface Text {
+  lettersData: LetterData[],
+  x: number;
+  y: number;
+}
+
 const palette = [
   "#751312",
   "#6200eb",
@@ -30,7 +36,7 @@ const palette = [
   "#FFFFFF"
 ];
 
-const text = "guillaume"
+const textString = "Guillaume + Alice"
 
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
@@ -41,15 +47,15 @@ export default function P5Sketch() {
             return;
         }
 
-        const width = 500 //document.body.offsetWidth - 15;
-        const height = 500 //document.body.offsetHeight - 15;
+        const width = document.body.offsetWidth - 50;
+        const height = document.body.offsetHeight - 50;
 
-        const duration = 25000;
+        const duration = 3000;
         const numberOfShape = palette.length;
 
         let currentShapeIndex = 0;
         let font = null;
-        let letters: LetterData[] = [];
+        let text: Text[] = [];
 
         function writeSymbol(p: any, letter: LetterData, x: number, y: number, duration: number) {
           p.push();
@@ -75,13 +81,23 @@ export default function P5Sketch() {
               p.textAlign(p.CENTER, p.CENTER);
               p.strokeWeight(4);
 
-              letters = palette.map((color, index) => {
+              text = textString.split("").map((letterString, indexText) => {
+                const letters : LetterData[] = palette.map((color, index) => {
+                  return {
+                    color, 
+                    symbol: letterString,
+                    size: (palette.length - index) * 5
+                  };
+                });
+
                 return {
-                  color, 
-                  symbol: "A", //text.toString()[index], 
-                  size: (palette.length - index) * 50
-                };
-              })
+                  lettersData: letters,
+                  x: indexText * 100 + 50,
+                  y: height/2
+                }
+
+              });
+              console.log(text)
             }
 
             p.draw = () => {
@@ -90,10 +106,11 @@ export default function P5Sketch() {
               //p.noLoop();
 
               const time = p.millis() / (duration) % 1;
-              // Look at each vertex
-              letters.forEach((letter, index) => {
-                writeSymbol(p, letter, width/2, height/2, time + 1.);
-              });
+              text.forEach(textData => {
+                textData.lettersData.forEach((letter, index) => {
+                  writeSymbol(p, letter, textData.x, textData.y, time + 1.);
+                });  
+              })      
             }
         })
     }, []);
