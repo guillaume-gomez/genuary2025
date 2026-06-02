@@ -9,10 +9,11 @@ interface LetterData {
   color: string;
 }
 
-interface Text {
-  lettersData: LetterData[],
+interface TextData {
+  letters: LetterData[],
   x: number;
   y: number;
+  numberOfRepetition: number;
 }
 
 const palette = [
@@ -36,7 +37,7 @@ const palette = [
   "#FFFFFF"
 ];
 
-const textString = "Guillaume + Alice"
+const textString = "France - Bresil"
 
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
@@ -55,7 +56,7 @@ export default function P5Sketch() {
 
         let currentShapeIndex = 0;
         let font = null;
-        let text: Text[] = [];
+        let textData: TextData[] = [];
 
         function writeSymbol(p: any, letter: LetterData, x: number, y: number, duration: number) {
           p.push();
@@ -81,7 +82,7 @@ export default function P5Sketch() {
               p.textAlign(p.CENTER, p.CENTER);
               p.strokeWeight(4);
 
-              text = textString.split("").map((letterString, indexText) => {
+              textData = textString.split("").map((letterString, indexText) => {
                 const letters : LetterData[] = palette.map((color, index) => {
                   return {
                     color, 
@@ -91,13 +92,13 @@ export default function P5Sketch() {
                 });
 
                 return {
-                  lettersData: letters,
+                  letters,
+                  numberOfRepetition: palette.length,
                   x: indexText * 100 + 50,
                   y: height/2
                 }
 
               });
-              console.log(text)
             }
 
             p.draw = () => {
@@ -106,8 +107,8 @@ export default function P5Sketch() {
               //p.noLoop();
 
               const time = p.millis() / (duration) % 1;
-              text.forEach(textData => {
-                textData.lettersData.forEach((letter, index) => {
+              textData.forEach(textData => {
+                textData.letters.forEach((letter, index) => {
                   writeSymbol(p, letter, textData.x, textData.y, time + 1.);
                 });  
               })      
