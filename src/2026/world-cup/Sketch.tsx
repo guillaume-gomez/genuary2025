@@ -3,17 +3,21 @@ import p5 from "p5";
 
 const { BASE_URL } = import.meta.env;
 
-interface LetterData {
-  symbol: string;
+interface Version {
   size: number;
   color: string;
 }
 
 interface TextData {
-  letters: LetterData[],
+  letters: LetterData[];
+  numberOfRepetition: number;
+}
+
+interface LetterData {
+  versions: Version[],
+  symbol: string;
   x: number;
   y: number;
-  numberOfRepetition: number;
 }
 
 const palette = [
@@ -56,13 +60,13 @@ export default function P5Sketch() {
 
         let currentShapeIndex = 0;
         let font = null;
-        let textData: TextData[] = [];
+        let textData: TextData = {};
 
-        function writeSymbol(p: any, letter: LetterData, x: number, y: number, duration: number) {
+        function writeSymbol(p: any, letter: LetterData, version : Version, duration: number) {
           p.push();
-          p.textSize(letter.size * duration);
-          p.fill(letter.color);
-          p.text(letter.symbol, x - letter.size/2, y);
+          p.textSize(version.size * duration);
+          p.fill(version.color);
+          p.text(letter.symbol, letter.x - version.size/2, letter.y);
           p.pop();
         }
 
@@ -82,23 +86,27 @@ export default function P5Sketch() {
               p.textAlign(p.CENTER, p.CENTER);
               p.strokeWeight(4);
 
-              textData = textString.split("").map((letterString, indexText) => {
-                const letters : LetterData[] = palette.map((color, index) => {
+              const letters : LetterData[] = textString.split("").map((letterString, indexText) => {
+                const versions : Version[] = palette.map((color, index) => {
                   return {
                     color, 
-                    symbol: letterString,
                     size: (palette.length - index) * 5
                   };
                 });
 
                 return {
-                  letters,
-                  numberOfRepetition: palette.length,
+                  versions,
+                  symbol: letterString,
                   x: indexText * 100 + 50,
                   y: height/2
                 }
 
               });
+
+              textData = { 
+                numberOfRepetition: palette.length,
+                letters 
+              };
             }
 
             p.draw = () => {
@@ -107,11 +115,15 @@ export default function P5Sketch() {
               //p.noLoop();
 
               const time = p.millis() / (duration) % 1;
-              textData.forEach(textData => {
-                textData.letters.forEach((letter, index) => {
-                  writeSymbol(p, letter, textData.x, textData.y, time + 1.);
-                });  
-              })      
+
+              for(let versionIndex = 0; versionIndex < textData.numberOfRepetition; versionIndex++) {
+                for(let letterIndex = 0; letterIndex < textData.letters.length; letterIndex++) {
+                  const letter = textData.letters[letterIndex];
+                  const version = letter.versions[versionIndex];
+                  writeSymbol(p, letter, version, time + 1.);
+                }
+              }
+    
             }
         })
     }, []);
