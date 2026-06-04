@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import p5 from "p5";
 
 const { BASE_URL } = import.meta.env;
@@ -41,11 +41,10 @@ const palette = [
   "#FFFFFF"
 ];
 
-const textString = "France - Bresil"
-
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
+    const [textString, setTextString] = useState<string>("France - Bresil");
 
     useEffect(() => {
         if(rendered.current) {
@@ -70,6 +69,9 @@ export default function P5Sketch() {
           p.pop();
         }
 
+        function centerText() {
+
+        }
 
         new p5((p: any) => {
             // flag to avoid to many instances of p5
@@ -129,6 +131,16 @@ export default function P5Sketch() {
     }, []);
 
     return(
-        <div ref={renderRef}></div>
+        <div>
+          <div ref={renderRef}></div>
+          <div className="py-6">
+            <input 
+              type="text"
+              className="input input-primary text-black"
+              value={textString}
+              onChange={(e) => setTextString(e.target.value)}
+            />
+          </div>
+        </div>
     )
 }
