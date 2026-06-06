@@ -41,10 +41,13 @@ const palette = [
   "#FFFFFF"
 ];
 
+const SPACING = 25;
+
 export default function P5Sketch() {
     const renderRef = useRef<HTMLDivElement>(null);
     const rendered = useRef(false);
-    const [textString, setTextString] = useState<string>("France - Bresil");
+    const [textString, setTextString] = useState<string>("Guillaume + Alice");
+    const [minSize, setMinSize] = useState<number>(40)
 
     useEffect(() => {
         if(rendered.current) {
@@ -54,7 +57,7 @@ export default function P5Sketch() {
         const width = document.body.offsetWidth - 50;
         const height = document.body.offsetHeight - 50;
 
-        const duration = 3000;
+        const duration = 10000;
         const numberOfShape = palette.length;
 
         let currentShapeIndex = 0;
@@ -62,15 +65,17 @@ export default function P5Sketch() {
         let textData: TextData = {};
 
         function writeSymbol(p: any, letter: LetterData, version : Version, duration: number) {
+          const size = Math.max(0, version.size);
+
           p.push();
-          p.textSize(version.size * duration);
+          p.textSize(size * duration);
           p.fill(version.color);
-          p.text(letter.symbol, letter.x - version.size/2, letter.y);
+          p.text(letter.symbol, letter.x - size/2, letter.y);
           p.pop();
         }
 
-        function centerText() {
-
+        function fontWidth() {
+          return (minSize + SPACING)
         }
 
         new p5((p: any) => {
@@ -92,15 +97,15 @@ export default function P5Sketch() {
                 const versions : Version[] = palette.map((color, index) => {
                   return {
                     color, 
-                    size: (palette.length - index) * 5
+                    size: ((palette.length - index) * minSize)
                   };
                 });
 
                 return {
                   versions,
                   symbol: letterString,
-                  x: indexText * 100 + 50,
-                  y: height/2
+                  x: (indexText * fontWidth()) + 50,
+                  y: 0
                 }
 
               });
@@ -109,6 +114,7 @@ export default function P5Sketch() {
                 numberOfRepetition: palette.length,
                 letters 
               };
+              console.log(textData)
             }
 
             p.draw = () => {
@@ -118,11 +124,16 @@ export default function P5Sketch() {
 
               const time = p.millis() / (duration) % 1;
 
+              p.translate(
+                (width - textString.length * fontWidth())/2,
+                  height/2
+              );
+
               for(let versionIndex = 0; versionIndex < textData.numberOfRepetition; versionIndex++) {
                 for(let letterIndex = 0; letterIndex < textData.letters.length; letterIndex++) {
                   const letter = textData.letters[letterIndex];
                   const version = letter.versions[versionIndex];
-                  writeSymbol(p, letter, version, time + 1.);
+                  writeSymbol(p, letter, version, 1. + time);
                 }
               }
     
