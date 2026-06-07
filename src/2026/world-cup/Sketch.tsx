@@ -6,6 +6,7 @@ const { BASE_URL } = import.meta.env;
 interface Version {
   size: number;
   color: string;
+  delay: number;
 }
 
 interface TextData {
@@ -65,12 +66,12 @@ export default function P5Sketch() {
         let textData: TextData = {};
 
         function writeSymbol(p: any, letter: LetterData, version : Version, duration: number) {
-          const size = Math.max(0, version.size);
-
+          const durationInMilliseconds = (duration * 1000);
+          const textSize = (duration * 1000) < version.delay ? version.size : version.size * (duration*1000 - version.delay);
           p.push();
-          p.textSize(size * duration);
+          p.textSize(textSize);
           p.fill(version.color);
-          p.text(letter.symbol, letter.x - size/2, letter.y);
+          p.text(letter.symbol, letter.x - textSize/2, letter.y);
           p.pop();
         }
 
@@ -97,7 +98,8 @@ export default function P5Sketch() {
                 const versions : Version[] = palette.map((color, index) => {
                   return {
                     color, 
-                    size: ((palette.length - index) * minSize)
+                    size: ((palette.length - index) * minSize),
+                    delay: index * 100
                   };
                 });
 
